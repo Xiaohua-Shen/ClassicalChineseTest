@@ -1,0 +1,17 @@
+<p> progress: {{ accessed_words }}/{{ total_words  }}
+{% if word_list %}
+    <ul>
+    {% for word in word_list %}
+        <table border="1">
+           <tr>
+               <td><h1><font face="verdana">{{ word.word }}</font></h1></td>
+               <td> <p> {{ word.sample }} <p align=right> {{ word.source }} <p> 翻译：{{ word.translation }}</td>
+               <td><p>古义：{{ word.classical }} <p>今义：{{ word.current }}</td>
+           </tr>
+        </table>
+    {% endfor %}
+    </ul>
+    <button onclick="location.reload()">下一个</button>
+{% else %}
+    <p>您已完成所有双音词的学习.</p>
+{% endif %}
