@@ -110,7 +110,8 @@
           {% endif %}
         {% endfor %}
         translation: "{{ word.translation|linebreaksbr }}",
-        highlight: "{{ word.word|linebreaksbr }}"
+        highlight: "{{ word.word|linebreaksbr }}",
+        id: "{{ word.id }}"
       },
     {% endfor %}
     ];
@@ -145,6 +146,11 @@
             <div class="question"> ${question_txt} </div>
             <div class="answers"> ${answers.join("")} </div>
             <div class="translation" style="color:#f8f6f0"> 翻译：${currentQuestion.translation} </div>
+            <form id="testresultform${questionNumber}" action="/doublesyllable/${currentQuestion.id}/result" method="post">
+                {% csrf_token %}
+                <input type='hidden' name="test_answer" value="" />
+                <input type='hidden' name="test_result" value="" />
+            </form>
           </div>`
         );
       });
@@ -168,6 +174,7 @@
         const answerContainer = answerContainers[questionNumber];
         const selector = `input[name=question${questionNumber}]:checked`;
         const userAnswer = (answerContainer.querySelector(selector) || {}).value;
+        var is_correct = 0
 
         // if answer is correct
         if (userAnswer === currentQuestion.correctAnswer) {
@@ -176,14 +183,45 @@
 
           // color the answers green
           answerContainers[questionNumber].style.color = "green";
+          translationContainers[questionNumber].style.color = "green";
           //
-              translationContainers[questionNumber].style.color = "green";
+          is_correct = 1
         } else {
           // if answer is wrong or blank
           // color the answers red
           answerContainers[questionNumber].style.color = "red";
           translationContainers[questionNumber].style.color = "red";
         }
+
+        // set test result form data
+        document.getElementsByName('test_answer')[questionNumber].value = userAnswer
+        document.getElementsByName('test_result')[questionNumber].value = is_correct
+
+        // submit test result to server
+        document.getElementById(`testresultform${questionNumber}`).submit(function(e) {
+
+
+        var form = $(this);
+        var url = form.attr('action');
+
+        $.ajax({
+              type: "POST",
+              url: url,
+              data: form.serialize(), // serializes the form's elements.
+              success: function(data)
+              {
+                console.log('Submission was successful.');
+                console.log(data);
+              },
+              error: function (data) {
+                  console.log('An error occurred.');
+                  console.log(data);
+              },
+            });
+
+        e.preventDefault(); // avoid to execute the actual submit of the form.
+        });
+
       });
 
       // show number of correct answers out of total
