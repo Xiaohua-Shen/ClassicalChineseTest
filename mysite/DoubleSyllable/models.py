@@ -18,6 +18,11 @@ class DoubleSyllable(models.Model):
     def __str__(self):
         return self.word
 
+class DoubleSyllableTestChoice(models.Model):
+    doublesyllable = models.ForeignKey(DoubleSyllable, on_delete=models.CASCADE)
+    choice_txt = models.CharField(max_length=100)
+    is_correct = models.IntegerField(default=0)
+
 class DoubleSyllableAccess(models.Model):
     doublesyllable = models.ForeignKey(DoubleSyllable, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)

@@ -71,7 +71,7 @@
     }
     .quiz-container{
       position: relative;
-      height: 350px;
+      height: 250px;
       margin-top: 20px;
     }
 
@@ -80,7 +80,7 @@
 </head>
 
 <body>
-<p> 预习进度: {{ accessed_words }}/{{ total_words  }}
+<p> progress: {{ accessed_words }}/{{ total_words  }}
 {% load shuffle %}
 {% if word_list %}
 <h1>双音词自测：<b>{{ word_list.0.word }}</b></h1>
@@ -98,19 +98,18 @@
     const myQuestions = [
     {% for word in word_list %}
       {
-        question: "{{ word.sample|linebreaksbr }} <br><small> {{ word.source|linebreaksbr }} </small>",
-        answers: [
+        question: "{{ word.sample }} <small> {{ word.source }} </small>",
+        answers: {
           {% for choice in word.doublesyllabletestchoice_set.all|shuffle %}
-          [{{ choice.id }}, "{{ choice.choice_txt|linebreaksbr }}"],
+          {{ choice.id }}: "{{ choice.choice_txt }}",
           {% endfor %}
-        ],
+        },
         {% for choice in word.doublesyllabletestchoice_set.all %}
           {% if choice.is_correct %}
         correctAnswer: "{{ choice.id }}",
           {% endif %}
         {% endfor %}
-        translation: "{{ word.translation|linebreaksbr }}",
-        highlight: "{{ word.word|linebreaksbr }}"
+        translation: "{{ word.translation }}"
       },
     {% endfor %}
     ];
@@ -125,24 +124,21 @@
         const answers = [];
 
         // and for each available answer...
-        currentQuestion.answers.forEach((currentAnswer, answerNumber) => {
+        for (letter in currentQuestion.answers) {
           // ...add an HTML radio button
           answers.push(
             `<label>
-              <input type="radio" name="question${questionNumber}" value="${currentAnswer[0]}">
-                ${currentAnswer[1]}
+              <input type="radio" name="question${questionNumber}" value="${letter}">
+                ${currentQuestion.answers[letter]}
             </label>`
           );
-        });
+        }
 
         // add this question and its answers to the output
-        var re = new RegExp(currentQuestion.highlight,"g")
-        var replace_txt = "<b>$&</b>"
-        var question_txt = currentQuestion.question.replace(re, replace_txt )
         output.push(
           `<div class="slide">
             第${questionNumber+1}/${myQuestions.length}题
-            <div class="question"> ${question_txt} </div>
+            <div class="question"> ${currentQuestion.question} </div>
             <div class="answers"> ${answers.join("")} </div>
             <div class="translation" style="color:#f8f6f0"> 翻译：${currentQuestion.translation} </div>
           </div>`

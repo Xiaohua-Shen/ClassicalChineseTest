@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from django.shortcuts import get_object_or_404, render
 from .models import DoubleSyllable
 from .models import DoubleSyllableAccess
+from .models import DoubleSyllableTestChoice
 from django.http import HttpResponse
 from django.template import loader
 from django.utils import timezone
@@ -32,3 +33,30 @@ def preview(request):
         DoubleSyllableAccess.objects.create(user_id=current_user.id,doublesyllable_id=word.id,access_date=timezone.now()) 
     # return response
     return HttpResponse(template.render(context, request))
+
+def test(request, doublesyllable_id):
+    doublesyllable = get_object_or_404(DoubleSyllable, pk=doublesyllable_id)
+    return render(request, 'DoubleSyllable/test.html', {'doublesyllable': doublesyllable})
+
+def result(request, doublesyllable_id):
+    doublesyllable = get_object_or_404(DoubleSyllable, pk=doublesyllable_id)
+    try:
+        selected_choice = doublesyllable.doublesyllabletestchoice_set.get(pk=request.POST['choice'])
+    except (KeyError, Choice.DoesNotExist):
+        # Redisplay the question voting form.
+        return render(request, 'DoubleSyllable/test.html', {
+            'doublesyllable': doublesyllable,
+            'result_message': "You didn't select a choice.",
+        })
+    else:
+        if selected_choice.is_correct:
+            result_message = "Correct"
+        else:
+            result_message = "Not Correct"
+        # record test result
+        
+        # return respone page with result
+        return render(request, 'DoubleSyllable/test.html', {
+            'doublesyllable': doublesyllable,
+            'result_message': "Correct",
+        })
