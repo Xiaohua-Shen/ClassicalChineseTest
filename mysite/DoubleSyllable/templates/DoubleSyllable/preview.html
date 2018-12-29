@@ -146,7 +146,7 @@
             <div class="question"> ${question_txt} </div>
             <div class="answers"> ${answers.join("")} </div>
             <div class="translation" style="color:#f8f6f0"> 翻译：${currentQuestion.translation} </div>
-            <form id="testresultform${questionNumber}" action="/doublesyllable/${currentQuestion.id}/result" method="post">
+            <form id="testresultform${questionNumber}" action="/doublesyllable/${currentQuestion.id}/result/" method="post">
                 {% csrf_token %}
                 <input type='hidden' name="test_answer" value="" />
                 <input type='hidden' name="test_result" value="" />
