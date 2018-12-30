@@ -198,7 +198,7 @@
         document.getElementsByName('test_result')[questionNumber].value = is_correct
 
         // submit test result to server
-        $(`#testresultform${questionNumber}`).submit(function(e) {
+        $('#testresultform'+questionNumber).submit(function(e) {
 
           e.preventDefault(); // avoid to execute the actual submit of the form.
 
@@ -221,7 +221,7 @@
                 });
         });
         
-        $(`#testresultform${questionNumber}`).submit();
+        $('#testresultform'+questionNumber).submit();
 
       });
 
