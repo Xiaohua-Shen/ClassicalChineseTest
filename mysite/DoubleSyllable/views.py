@@ -37,7 +37,8 @@ def preview(request):
         'word_list': word_list,
         'total_words': total_words,
         'accessed_words': accessed_words,
-        'title': '预习'
+        'title': '预习',
+        'hide_next_word': False
     }
     # return response
     return HttpResponse(template.render(context, request))
@@ -70,7 +71,8 @@ def review(request):
         'word_list': word_list,
         'total_words': accessed_words,
         'accessed_words': passed_words,
-        'title': '复习未通过词语'
+        'title': '复习未通过词语',
+        'hide_next_word': False
     }
     # return response
     return HttpResponse(template.render(context, request))
@@ -93,7 +95,8 @@ def review2(request):
         'word_list': word_list,
         'total_words': error_words,
         'accessed_words': error_words,
-        'title': '复习曾出错词语'
+        'title': '复习曾出错词语',
+        'hide_next_word': True
     }
     # return response
     return HttpResponse(template.render(context, request))
