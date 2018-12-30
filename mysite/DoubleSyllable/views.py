@@ -25,14 +25,18 @@ def preview(request):
     accessed_words = accessed_word_list.count()
 
     # fetch one unaccessed word 
-    word = DoubleSyllable.objects.exclude(id__in=accessed_word_list).values('word')[0]
-    # fetch work list by word
-    word_list = DoubleSyllable.objects.filter(word__exact=word['word'])
+    if total_words != accessed_words:
+        word = DoubleSyllable.objects.exclude(id__in=accessed_word_list).values('word')[0]
+        # fetch work list by word
+        word_list = DoubleSyllable.objects.filter(word__exact=word['word'])
+    else:
+        word_list = None
+    
     template = loader.get_template('DoubleSyllable/preview.html')
     context = {
         'word_list': word_list,
         'total_words': total_words,
-        'accessed_words': accessed_words + 1,
+        'accessed_words': accessed_words,
         'title': '预习'
     }
     # return response
@@ -60,12 +64,12 @@ def review(request):
         word_list = DoubleSyllable.objects.filter(word__exact=word['word'])
     else:
         word_list = None
-        
+
     template = loader.get_template('DoubleSyllable/preview.html')
     context = {
         'word_list': word_list,
         'total_words': accessed_words,
-        'accessed_words': passed_words + 1,
+        'accessed_words': passed_words,
         'title': '复习'
     }
     # return response
