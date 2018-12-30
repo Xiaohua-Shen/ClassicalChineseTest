@@ -43,14 +43,15 @@ def review(request):
         return redirect('/admin/login?next=%s' % (request.path))
 
     current_user = request.user
-    accessed_words = DoubleSyllableAccess.objects.filter(user_id__exact=current_user.id).values('doublesyllable_id').distinct().count()
+    accessed_words_list = DoubleSyllableAccess.objects.filter(user_id__exact=current_user.id).values('doublesyllable_id').distinct()
+    access_words = accessed_words_list.count()
     
     # already passed word list
     passed_word_list = DoubleSyllableTest.objects.filter(user_id__exact=current_user.id,test_result=1).values('doublesyllable_id').distinct()
     passed_words = passed_word_list.count()
 
     # get unpassed word list
-    unpassed_word_list = accessed_words.difference(passed_word_list)
+    unpassed_word_list = accessed_words_list.difference(passed_word_list)
 
     # fetch one unpassed word 
     word = DoubleSyllable.objects.filter(id__in=unpassed_word_list).values('word')[0]
