@@ -90,7 +90,7 @@ def review2(request):
 
     template = loader.get_template('DoubleSyllable/preview.html')
     context = {
-        'word_list': error_words_list,
+        'word_list': word_list,
         'total_words': error_words,
         'accessed_words': error_words,
         'title': '复习曾出错词语'
