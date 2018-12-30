@@ -39,7 +39,7 @@ def preview(request):
 
 def index(request):
     if not request.user.is_authenticated:
-        return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
+        return redirect('/admin/login?next=%s' % (request.path))
     else:
         return render(request, 'DoubleSyllable/index.html', {})
 
