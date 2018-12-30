@@ -9,6 +9,8 @@ from .models import DoubleSyllableTest
 from django.http import HttpResponse
 from django.template import loader
 from django.utils import timezone
+from django.conf import settings
+from django.shortcuts import redirect
 
 # Create your views here.
 def preview(request):
@@ -36,7 +38,10 @@ def preview(request):
     return HttpResponse(template.render(context, request))
 
 def index(request):
-    return render(request, 'DoubleSyllable/index.html', {})
+    if not request.user.is_authenticated:
+        return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
+    else:
+        return render(request, 'DoubleSyllable/index.html', {})
 
 def result(request, doublesyllable_id):
     doublesyllable = get_object_or_404(DoubleSyllable, pk=doublesyllable_id)
