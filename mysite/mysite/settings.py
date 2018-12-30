@@ -32,7 +32,6 @@ ALLOWED_HOSTS = ['54.169.160.97']
 
 INSTALLED_APPS = (
     'DoubleSyllable.apps.DoublesyllableConfig',
-    'polls.apps.PollsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
