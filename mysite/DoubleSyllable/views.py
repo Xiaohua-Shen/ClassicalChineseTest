@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404, render
 from .models import DoubleSyllable
 from .models import DoubleSyllableAccess
 from .models import DoubleSyllableTestChoice
+from .models import DoubleSyllableTest
 from django.http import HttpResponse
 from django.template import loader
 from django.utils import timezone
@@ -40,23 +41,11 @@ def test(request, doublesyllable_id):
 
 def result(request, doublesyllable_id):
     doublesyllable = get_object_or_404(DoubleSyllable, pk=doublesyllable_id)
-    try:
-        selected_choice = doublesyllable.doublesyllabletestchoice_set.get(pk=request.POST['choice'])
-    except (KeyError, Choice.DoesNotExist):
-        # Redisplay the question voting form.
-        return render(request, 'DoubleSyllable/test.html', {
-            'doublesyllable': doublesyllable,
-            'result_message': "You didn't select a choice.",
-        })
-    else:
-        if selected_choice.is_correct:
-            result_message = "Correct"
-        else:
-            result_message = "Not Correct"
-        # record test result
-        
-        # return respone page with result
-        return render(request, 'DoubleSyllable/test.html', {
-            'doublesyllable': doublesyllable,
-            'result_message': "Correct",
-        })
+    // record test result to db
+    DoubleSyllableTest.objects.create(user_id=request.user.id,
+                                      doublesyllable_id=doublesyllable_id,
+                                      test_date=timezone.now(),
+                                      test_result=request.POST.get("test_result", ""),
+                                      test_answer=request.POST.get("test_answer", "")
+                                      )
+    return HttpResponse("test result is recorded")
