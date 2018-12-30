@@ -198,29 +198,30 @@
         document.getElementsByName('test_result')[questionNumber].value = is_correct
 
         // submit test result to server
-        document.getElementById(`testresultform${questionNumber}`).submit(function(e) {
+        $(`#testresultform${questionNumber}`).submit(function(e) {
 
+          e.preventDefault(); // avoid to execute the actual submit of the form.
 
-        var form = $(this);
-        var url = form.attr('action');
+          var form = $(this);
+          var url = form.attr('action');
 
-        $.ajax({
-              type: "POST",
-              url: url,
-              data: form.serialize(), // serializes the form's elements.
-              success: function(data)
-              {
-                console.log('Submission was successful.');
-                console.log(data);
-              },
-              error: function (data) {
-                  console.log('An error occurred.');
-                  console.log(data);
-              },
-            });
-
-        e.preventDefault(); // avoid to execute the actual submit of the form.
+          $.ajax({
+                method: "POST",
+                url: url,
+                data: form.serialize(), // serializes the form's elements.
+                }).done(function(data)
+                {
+                  alert("hahaha");
+                  //console.log('Submission was successful.');
+                  //console.log(data);
+                }).fail(function (data) {
+                    alert("hohoho");
+                    //console.log('An error occurred.');
+                    //console.log(data);
+                });
         });
+        
+        $(`#testresultform${questionNumber}`).submit();
 
       });
 
