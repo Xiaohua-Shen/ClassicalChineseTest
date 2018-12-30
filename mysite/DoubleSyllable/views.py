@@ -33,6 +33,35 @@ def preview(request):
         'word_list': word_list,
         'total_words': total_words,
         'accessed_words': accessed_words + 1,
+        'title': '预习'
+    }
+    # return response
+    return HttpResponse(template.render(context, request))
+
+def review(request):
+    if not request.user.is_authenticated:
+        return redirect('/admin/login?next=%s' % (request.path))
+
+    current_user = request.user
+    accessed_words = DoubleSyllableAccess.objects.filter(user_id__exact=current_user.id).values('doublesyllable_id').distinct().count()
+    
+    # already passed word list
+    passed_word_list = DoubleSyllableTest.objects.filter(user_id__exact=current_user.id,test_result=1).values('doublesyllable_id').distinct()
+    passed_words = passed_word_list.count()
+
+    # get unpassed word list
+    unpassed_word_list = accessed_words.difference(passed_word_list)
+
+    # fetch one unpassed word 
+    word = DoubleSyllable.objects.filter(id__in=unpassed_word_list).values('word')[0]
+    # fetch work list by word
+    word_list = DoubleSyllable.objects.filter(word__exact=word['word'])
+    template = loader.get_template('DoubleSyllable/preview.html')
+    context = {
+        'word_list': word_list,
+        'total_words': accessed_words,
+        'accessed_words': passed_words + 1,
+        'title': '复习'
     }
     # return response
     return HttpResponse(template.render(context, request))
