@@ -14,6 +14,9 @@ from django.shortcuts import redirect
 
 # Create your views here.
 def preview(request):
+    if not request.user.is_authenticated:
+        return redirect('/admin/login?next=%s' % (request.path))
+        
     current_user = request.user
     total_words = DoubleSyllable.objects.count()
     
