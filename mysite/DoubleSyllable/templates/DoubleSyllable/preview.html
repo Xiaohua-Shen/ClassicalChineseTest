@@ -161,6 +161,10 @@
       quizContainer.innerHTML = output.join("");
     }
 
+    function nextWord() {
+      location.reload();
+    }
+
     function showResults() {
       // gather answer containers from our quiz
       const answerContainers = quizContainer.querySelectorAll(".answers");
@@ -239,6 +243,7 @@
 
       if (currentSlide === 0) {
         previousButton.style.display = "none";
+        nextWordButton.style.display = "none";
       } else {
         previousButton.style.display = "inline-block";
       }
@@ -279,7 +284,7 @@
     submitButton.addEventListener("click", showResults);
     previousButton.addEventListener("click", showPreviousSlide);
     nextButton.addEventListener("click", showNextSlide);
-    nextWordButton.addEventListener("click", "location.reload()");
+    nextWordButton.addEventListener("click", nextWord);
   })();
 
 
