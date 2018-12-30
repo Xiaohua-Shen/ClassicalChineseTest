@@ -91,6 +91,7 @@
 <button id="previous">上一题</button>
 <button id="next">下一题</button>
 <button id="submit">提交答案</button>
+<button id="nextword">下一词</button>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript">
@@ -226,6 +227,9 @@
 
       // show number of correct answers out of total
       resultsContainer.innerHTML = `共 ${myQuestions.length} 题，答对 ${numCorrect} 题`;
+      if (numCorrect === myQuestions.length) {
+        nextWordButton.style.display = "inline-block"
+      }
     }
 
     function showSlide(n) {
@@ -259,6 +263,7 @@
     const quizContainer = document.getElementById("quiz");
     const resultsContainer = document.getElementById("results");
     const submitButton = document.getElementById("submit");
+    const nextWordButton = document.getElementById("nextword");
 
     // display quiz right away
     buildQuiz();
@@ -274,6 +279,7 @@
     submitButton.addEventListener("click", showResults);
     previousButton.addEventListener("click", showPreviousSlide);
     nextButton.addEventListener("click", showNextSlide);
+    nextWordButton.addEventListener("click", "location.reload()");
   })();
 
 
