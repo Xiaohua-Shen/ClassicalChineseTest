@@ -54,9 +54,11 @@ def review(request):
     unpassed_word_list = accessed_words_list.difference(passed_word_list)
 
     # fetch one unpassed word 
-    word = DoubleSyllable.objects.filter(id__in=unpassed_word_list).values('word')[0]
-    # fetch work list by word
-    word_list = DoubleSyllable.objects.filter(word__exact=word['word'])
+    if accessed_words != passed_words:
+        word = DoubleSyllable.objects.filter(id__in=unpassed_word_list).values('word')[0]
+        # fetch work list by word
+        word_list = DoubleSyllable.objects.filter(word__exact=word['word'])
+    
     template = loader.get_template('DoubleSyllable/preview.html')
     context = {
         'word_list': word_list,
