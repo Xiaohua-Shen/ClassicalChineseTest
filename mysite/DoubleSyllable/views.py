@@ -49,7 +49,7 @@ def index(request):
     accessed_words = DoubleSyllableAccess.objects.filter(user_id__exact=current_user.id).values('doublesyllable_id').distinct().count()
 
     # pass test word count
-    passed_words = DoubleSyllableTest.objects.filter(user_id__exact=current_user.id,is_correct=1).values('doublesyllable_id').distinct().count()
+    passed_words = DoubleSyllableTest.objects.filter(user_id__exact=current_user.id,test_result=1).values('doublesyllable_id').distinct().count()
 
     # prepare return page
     template = loader.get_template('DoubleSyllable/index.html')
