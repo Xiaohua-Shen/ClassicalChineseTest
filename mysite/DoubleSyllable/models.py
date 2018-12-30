@@ -33,4 +33,4 @@ class DoubleSyllableTest(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     test_date = models.DateTimeField('test accessed')
     test_result = models.IntegerField(default=0)
-    test_answer = models.CharField(max_length=100)
+    test_answer = models.CharField(max_length=100,default="")
