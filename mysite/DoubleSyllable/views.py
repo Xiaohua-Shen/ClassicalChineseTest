@@ -16,7 +16,7 @@ from django.shortcuts import redirect
 def preview(request):
     if not request.user.is_authenticated:
         return redirect('/admin/login?next=%s' % (request.path))
-        
+
     current_user = request.user
     total_words = DoubleSyllable.objects.count()
     
@@ -34,17 +34,33 @@ def preview(request):
         'total_words': total_words,
         'accessed_words': accessed_words + 1,
     }
-    # mark this word as accessed
-    for word in word_list:
-        DoubleSyllableAccess.objects.create(user_id=current_user.id,doublesyllable_id=word.id,access_date=timezone.now()) 
     # return response
     return HttpResponse(template.render(context, request))
 
 def index(request):
     if not request.user.is_authenticated:
         return redirect('/admin/login?next=%s' % (request.path))
-    else:
-        return render(request, 'DoubleSyllable/index.html', {})
+    
+    current_user = request.user
+    # total word
+    total_words = DoubleSyllable.objects.count()
+    
+    # already acessed word count
+    accessed_words = DoubleSyllableAccess.objects.filter(user_id__exact=current_user.id).values('doublesyllable_id').distinct().count()
+
+    # pass test word count
+    passed_words = DoubleSyllableTest.objects.filter(user_id__exact=current_user.id,is_correct=1).values('doublesyllable_id').distinct().count()
+
+    # prepare return page
+    template = loader.get_template('DoubleSyllable/index.html')
+    context = {
+        'total_words': total_words,
+        'accessed_words': accessed_words,
+        'passed_words': passed_words,
+        'user': current_user.username
+    }
+    # return page
+    return HttpResponse(template.render(context, request))
 
 def result(request, doublesyllable_id):
     doublesyllable = get_object_or_404(DoubleSyllable, pk=doublesyllable_id)
@@ -55,4 +71,10 @@ def result(request, doublesyllable_id):
                                       test_result=request.POST.get("test_result", ""),
                                       test_answer=request.POST.get("test_answer", "")
                                       )
+    # record access log to db
+    DoubleSyllableAccess.objects.create(user_id=current_user.id,
+                                        doublesyllable_id=word.id,
+                                        access_date=timezone.now()
+                                        )
+    # return page 
     return HttpResponse("test result is recorded")
