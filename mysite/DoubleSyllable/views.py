@@ -58,7 +58,9 @@ def review(request):
         word = DoubleSyllable.objects.filter(id__in=unpassed_word_list).values('word')[0]
         # fetch work list by word
         word_list = DoubleSyllable.objects.filter(word__exact=word['word'])
-    
+    else:
+        word_list = None
+        
     template = loader.get_template('DoubleSyllable/preview.html')
     context = {
         'word_list': word_list,
