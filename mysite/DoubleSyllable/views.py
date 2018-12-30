@@ -72,7 +72,7 @@ def result(request, doublesyllable_id):
                                       test_answer=request.POST.get("test_answer", "")
                                       )
     # record access log to db
-    DoubleSyllableAccess.objects.create(user_id=current_user.id,
+    DoubleSyllableAccess.objects.create(user_id=request.user.id,
                                         doublesyllable_id=word.id,
                                         access_date=timezone.now()
                                         )
