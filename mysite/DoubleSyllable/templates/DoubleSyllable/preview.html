@@ -80,9 +80,9 @@
 </head>
 
 <body>
-<p> {{ title }}进度: {{ accessed_words|add:1 }}/{{ total_words  }}
 {% load shuffle %}
 {% if word_list %}
+<p> {{ title }}进度: {{ accessed_words|add:1 }}/{{ total_words  }}
 <h1>双音词自测：<b>{{ word_list.0.word }}</b></h1>
 <div id="results"></div>
 <div class="quiz-container">
@@ -92,6 +92,7 @@
 <button id="next">下一题</button>
 <button id="submit">提交答案</button>
 <button id="nextword">下一词</button>
+<a href="/doublesyllable/">返回</a>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript">
