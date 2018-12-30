@@ -82,7 +82,9 @@
 <body>
 {% load shuffle %}
 {% if word_list %}
+{% if accessed_words != total_words %}
 <p> {{ title }}进度: {{ accessed_words|add:1 }}/{{ total_words  }}
+{% endif %}
 <h1>双音词自测：<b>{{ word_list.0.word }}</b></h1>
 <div id="results"></div>
 <div class="quiz-container">

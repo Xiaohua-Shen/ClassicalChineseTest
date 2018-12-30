@@ -70,7 +70,30 @@ def review(request):
         'word_list': word_list,
         'total_words': accessed_words,
         'accessed_words': passed_words,
-        'title': '复习'
+        'title': '复习未通过词语'
+    }
+    # return response
+    return HttpResponse(template.render(context, request))
+
+def review2(request):
+    if not request.user.is_authenticated:
+        return redirect('/admin/login?next=%s' % (request.path))
+
+    current_user = request.user
+    error_words_list = DoubleSyllableTest.objects.filter(user_id__exact=current_user.id,test_result=0).values('doublesyllable_id').distinct()
+    error_words = error_words_list.count()
+    
+    if error_words != 0:
+        word_list = DoubleSyllable.objects.filter(id__in=error_words_list)
+    else:
+        word_list = None
+
+    template = loader.get_template('DoubleSyllable/preview.html')
+    context = {
+        'word_list': error_words_list,
+        'total_words': error_words,
+        'accessed_words': error_words,
+        'title': '复习曾出错词语'
     }
     # return response
     return HttpResponse(template.render(context, request))
