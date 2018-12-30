@@ -73,7 +73,7 @@ def result(request, doublesyllable_id):
                                       )
     # record access log to db
     DoubleSyllableAccess.objects.create(user_id=request.user.id,
-                                        doublesyllable_id=word.id,
+                                        doublesyllable_id=doublesyllable_id,
                                         access_date=timezone.now()
                                         )
     # return page 
