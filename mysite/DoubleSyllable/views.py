@@ -44,7 +44,7 @@ def review(request):
 
     current_user = request.user
     accessed_words_list = DoubleSyllableAccess.objects.filter(user_id__exact=current_user.id).values('doublesyllable_id').distinct()
-    access_words = accessed_words_list.count()
+    accessed_words = accessed_words_list.count()
     
     # already passed word list
     passed_word_list = DoubleSyllableTest.objects.filter(user_id__exact=current_user.id,test_result=1).values('doublesyllable_id').distinct()
