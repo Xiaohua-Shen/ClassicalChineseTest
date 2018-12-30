@@ -41,7 +41,7 @@ def test(request, doublesyllable_id):
 
 def result(request, doublesyllable_id):
     doublesyllable = get_object_or_404(DoubleSyllable, pk=doublesyllable_id)
-    // record test result to db
+    # record test result to db
     DoubleSyllableTest.objects.create(user_id=request.user.id,
                                       doublesyllable_id=doublesyllable_id,
                                       test_date=timezone.now(),
