@@ -35,9 +35,8 @@ def preview(request):
     # return response
     return HttpResponse(template.render(context, request))
 
-def test(request, doublesyllable_id):
-    doublesyllable = get_object_or_404(DoubleSyllable, pk=doublesyllable_id)
-    return render(request, 'DoubleSyllable/test.html', {'doublesyllable': doublesyllable})
+def index(request):
+    return render(request, 'DoubleSyllable/index.html', {})
 
 def result(request, doublesyllable_id):
     doublesyllable = get_object_or_404(DoubleSyllable, pk=doublesyllable_id)
