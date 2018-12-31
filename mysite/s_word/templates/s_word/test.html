@@ -82,7 +82,7 @@
 <body>
 {% load shuffle %}
 {% if word_list %}
-<h1>实词自测：<b>{{ word_list.0.sword }}</b></h1>
+<h1>{{ test_type }}：<b>{{ sword }}</b></h1>
 <div id="results"></div>
 <div class="quiz-container">
   <div id="quiz"></div>
@@ -90,7 +90,7 @@
 <button id="previous">上一题</button>
 <button id="next">下一题</button>
 <button id="submit">提交答案</button>
-<a href="/s_word/">返回</a>
+<a href="/s_word/word/?sword={{ sword }}">返回</a>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript">
@@ -102,13 +102,13 @@
         question: "{{ word.sample|linebreaksbr }} <br><small> {{ word.source|linebreaksbr }} </small>",
         answers: [
           {% for choice in word.swordtest1choice_set.all|shuffle %}
-            {% if choice.test_type == "选择正确含义" %}
+            {% if choice.test_type == "{{ test_type }}" %}
             [{{ choice.id }}, "{{ choice.choice_txt|linebreaksbr }}"],
             {% endif %}
           {% endfor %}
         ],
         {% for choice in word.swordtest1choice_set.all %}
-          {% if choice.is_correct and choice.test_type == "选择正确含义" %}
+          {% if choice.is_correct and choice.test_type == "{{ test_type }}" %}
         correctAnswer: "{{ choice.id }}",
           {% endif %}
         {% endfor %}
@@ -149,8 +149,9 @@
             <div class="question"> ${question_txt} </div>
             <div class="answers"> ${answers.join("")} </div>
             <div class="translation" style="color:#f8f6f0"> 翻译：${currentQuestion.translation} </div>
-            <form id="testresultform${questionNumber}" action="/doublesyllable/${currentQuestion.id}/result/" method="post">
+            <form id="testresultform${questionNumber}" action="/s_word/${currentQuestion.id}/result/" method="post">
                 {% csrf_token %}
+                <input type='hidden' name="test_type" value="{{ test_type }}" />
                 <input type='hidden' name="test_answer" value="" />
                 <input type='hidden' name="test_result" value="" />
             </form>
@@ -282,7 +283,7 @@
 </script>
 {% else %}
     <p>该实词目前没有学习内容.</p>
-    <a href="/s_word/">返回</a>
+    <a href="/s_word/word/?sword={{ sword }}">返回</a>
 {% endif %}
 </body>
 

@@ -114,10 +114,10 @@
   </style>
 </head>
 <body>
-    <h1>实词学习</h1>
+    <h1>实词学习：{{ sword }}</h1>
     <p>用户：{{ user }}</p>
-    {% for word in word_list %}
-    <a href="/s_word/word/?sword={{ word.sword }}" class=notstart>{{ word.sword }}</a>
-    {% endfor %}
+    <a href="/s_word/test/?sword={{ word.sword }}&test_type=含义" class=notstart>测试含义</a>
+    <a href="/s_word/test/?sword={{ word.sword }}&test_type=拼音" class=notstart>测试拼音</a>
+    <a href="/s_word/test/?sword={{ word.sword }}&test_type=词性" class=notstart>测试词性</a>
 </body>
 </html>

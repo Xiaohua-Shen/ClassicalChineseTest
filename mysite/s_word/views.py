@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.shortcuts import get_object_or_404, render
-from .models import SWord
+from .models import SWord,SWordTest
 from django.http import HttpResponse
 from django.template import loader
 from django.utils import timezone
@@ -29,18 +29,55 @@ def index(request):
     # return page
     return HttpResponse(template.render(context, request))
 
-
-def preview(request):
+def word(request):
     if not request.user.is_authenticated:
         return redirect('/admin/login?next=%s' % (request.path))
     
-    word_list = SWord.objects.filter(sword=request.GET.get('sword', ''))
+    sword = request.GET.get('sword', '')
+    pinyin_list = SWord.objects.filter(sword=sword).exclude(pinyin="").values('pinyin').distinct()
+    word_class_list = SWord.objects.filter(sword=sword).values('word_class').distinct()
+    meaning_list = SWord.objects.filter(sword=sword)).values('meaning').distinct()
 
     # prepare return page
-    template = loader.get_template('s_word/preview.html')
+    template = loader.get_template('s_word/word.html')
     context = {
-        'word_list': word_list,
-        'user': request.user.username
+        'sword': sword,
+        'pinyin_list': pinyin_list,
+        'word_class_list': word_class_list,
+        'meaning_list': meaning_list,
+        'user': request.user.username,
     }
     # return page
     return HttpResponse(template.render(context, request))
+
+def test(request):
+    if not request.user.is_authenticated:
+        return redirect('/admin/login?next=%s' % (request.path))
+    
+    sword = request.GET.get('sword', '')
+    test_type = request.GET.get('test_type', '')
+    word_list = SWord.objects.filter(sword=sword)
+
+    # prepare return page
+    template = loader.get_template('s_word/test.html')
+    context = {
+        'sword': sword
+        'word_list': word_list,
+        'user': request.user.username,
+        'test_type': test_type
+    }
+    # return page
+    return HttpResponse(template.render(context, request))
+
+def result(request, word_id):
+    sword = get_object_or_404(SWord, pk=word_id)
+    # record test result to db
+    SWordTest.objects.create(user_id=request.user.id,
+                                      doublesyllable_id=doublesyllable_id,
+                                      test_date=timezone.now(),
+                                      test_type=request.POST.get("test_type", ""),
+                                      test_result=request.POST.get("test_result", ""),
+                                      test_answer=request.POST.get("test_answer", "")
+                                      )
+    # return page 
+    return HttpResponse("test result is recorded")
