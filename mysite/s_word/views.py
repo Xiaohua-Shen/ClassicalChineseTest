@@ -36,7 +36,7 @@ def word(request):
     sword = request.GET.get('sword', '')
     pinyin_list = SWord.objects.filter(sword=sword).exclude(pinyin="").values('pinyin').distinct()
     word_class_list = SWord.objects.filter(sword=sword).values('word_class').distinct()
-    meaning_list = SWord.objects.filter(sword=sword)).values('meaning').distinct()
+    meaning_list = SWord.objects.filter(sword=sword).values('meaning').distinct()
 
     # prepare return page
     template = loader.get_template('s_word/word.html')
