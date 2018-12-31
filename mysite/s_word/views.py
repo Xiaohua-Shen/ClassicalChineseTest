@@ -23,7 +23,7 @@ def index(request):
     # prepare return page
     template = loader.get_template('s_word/index.html')
     context = {
-        'total_words': word_list,
+        'word_list': word_list,
         'user': current_user.username
     }
     # return page
