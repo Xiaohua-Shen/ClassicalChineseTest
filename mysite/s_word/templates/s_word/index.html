@@ -117,7 +117,7 @@
     <h1>实词学习</h1>
     <p>用户：{{ user }}</p>
     {% for word in word_list %}
-    <a href="/s_word/preview" class=notstart>{{ word.sword }}</a>
+    <a href="/s_word/preview" class=notstart>{{ word['sword'] }}</a>
     {% endfor %}
 </body>
 </html>
