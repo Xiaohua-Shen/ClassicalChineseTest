@@ -102,7 +102,7 @@
         question: "{{ word.sample|linebreaksbr }} <br><small> {{ word.source|linebreaksbr }} </small>",
         answers: [
           {% for choice in word.swordtest1choice_set.all|shuffle %}
-            {% if choice.test_type == "{{ test_type }}" %}
+            {% if choice.test_type == test_type %}
             [{{ choice.id }}, "{{ choice.choice_txt|linebreaksbr }}"],
             {% endif %}
           {% endfor %}
