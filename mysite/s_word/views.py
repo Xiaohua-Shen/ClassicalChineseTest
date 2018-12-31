@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.shortcuts import get_object_or_404, render
-from .models import SWord,SWordTest
+from .models import SWord,SWordTest,SWordTest1Choice
 from django.http import HttpResponse
 from django.template import loader
 from django.utils import timezone
@@ -34,9 +34,10 @@ def word(request):
         return redirect('/admin/login?next=%s' % (request.path))
     
     sword = request.GET.get('sword', '')
-    pinyin_list = SWord.objects.filter(sword=sword).exclude(pinyin="").values('pinyin').distinct()
-    word_class_list = SWord.objects.filter(sword=sword).values('word_class').distinct()
-    meaning_list = SWord.objects.filter(sword=sword).values('meaning').distinct()
+    sword_list = SWord.objects.filter(sword=sword)
+    pinyin_list = sword_list.exclude(pinyin="").values('pinyin').distinct()
+    word_class_list = sword_list.values('word_class').distinct()
+    meaning_list = sword_list.values('meaning').distinct()
 
     # prepare return page
     template = loader.get_template('s_word/word.html')
