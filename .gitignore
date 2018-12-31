@@ -1,5 +1,4 @@
 # generated files
-mysite/DoubleSyllable/**.pyc
-mysite/polls/*
+mysite/**/**.pyc
 # db file
 mysite/db.sqlite3
