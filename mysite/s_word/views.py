@@ -28,3 +28,19 @@ def index(request):
     }
     # return page
     return HttpResponse(template.render(context, request))
+
+
+def preview(request,sword):
+    if not request.user.is_authenticated:
+        return redirect('/admin/login?next=%s' % (request.path))
+    
+    word_list = get_object_or_404(SWord, sword=sword)
+
+    # prepare return page
+    template = loader.get_template('s_word/preview.html')
+    context = {
+        'word_list': word_list,
+        'user': current_user.username
+    }
+    # return page
+    return HttpResponse(template.render(context, request))
