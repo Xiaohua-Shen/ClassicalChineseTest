@@ -108,7 +108,7 @@
           {% endfor %}
         ],
         {% for choice in word.swordtest1choice_set.all %}
-          {% if choice.is_correct and choice.test_type == "{{ test_type }}" %}
+          {% if choice.is_correct and choice.test_type == test_type %}
         correctAnswer: "{{ choice.id }}",
           {% endif %}
         {% endfor %}
