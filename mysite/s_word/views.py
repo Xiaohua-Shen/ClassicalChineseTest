@@ -61,7 +61,7 @@ def test(request):
     # prepare return page
     template = loader.get_template('s_word/test.html')
     context = {
-        'sword': sword
+        'sword': sword,
         'word_list': word_list,
         'user': request.user.username,
         'test_type': test_type
