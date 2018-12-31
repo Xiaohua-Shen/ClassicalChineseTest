@@ -73,7 +73,7 @@ def result(request, word_id):
     sword = get_object_or_404(SWord, pk=word_id)
     # record test result to db
     SWordTest.objects.create(user_id=request.user.id,
-                                      doublesyllable_id=doublesyllable_id,
+                                      sword_id=word_id,
                                       test_date=timezone.now(),
                                       test_type=request.POST.get("test_type", ""),
                                       test_result=request.POST.get("test_result", ""),
