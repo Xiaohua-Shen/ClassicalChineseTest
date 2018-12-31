@@ -18,5 +18,6 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^doublesyllable/', include('DoubleSyllable.urls')),
+    url(r'^s_word/', include('s_word.urls')),
     url(r'^admin/', include(admin.site.urls)),
 ]
