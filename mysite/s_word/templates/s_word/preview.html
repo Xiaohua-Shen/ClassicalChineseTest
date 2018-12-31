@@ -82,7 +82,7 @@
 <body>
 {% load shuffle %}
 {% if word_list %}
-<h1>实词自测：<b>{{ word_list.0.word }}</b></h1>
+<h1>实词自测：<b>{{ word_list.0.sword }}</b></h1>
 <div id="results"></div>
 <div class="quiz-container">
   <div id="quiz"></div>
@@ -107,7 +107,7 @@
             {% endif %}
           {% endfor %}
         ],
-        {% for choice in word.doublesyllabletestchoice_set.all %}
+        {% for choice in word.swordtest1choice_set.all %}
           {% if choice.is_correct and choice.test_type == "选择正确含义" %}
         correctAnswer: "{{ choice.id }}",
           {% endif %}
