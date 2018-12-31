@@ -21,7 +21,7 @@ def index(request):
     word_list = SWord.objects.all().values('sword').distinct()
 
     # prepare return page
-    template = loader.get_template('SWord/index.html')
+    template = loader.get_template('s_word/index.html')
     context = {
         'total_words': word_list,
         'user': current_user.username
