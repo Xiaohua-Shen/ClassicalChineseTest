@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" >
+
+<head>
+  <meta charset="UTF-8">
+  <title>Sword Dashboard</title>
+  <style type="text/css">
+
+    @import url(https://fonts.googleapis.com/css?family=Work+Sans:300,600);
+
+    body{
+      font-size: 20px;
+      font-family: 'Work Sans', sans-serif;
+      color: #333;
+      font-weight: 300;
+      text-align: center;
+      background-color: #f8f6f0;
+    }
+    h1{
+      font-weight: 300;
+      margin: 0px;
+      padding: 10px;
+      font-size: 20px;
+      background-color: #444;
+      color: #fff;
+    }
+    .question{
+      font-size: 30px;
+      margin-bottom: 10px;
+    }
+    .answers {
+      margin-bottom: 20px;
+      text-align: left;
+      display: inline-block;
+    }
+    .answers label{
+      display: block;
+      margin-bottom: 10px;
+    }
+    button{
+      font-family: 'Work Sans', sans-serif;
+      font-size: 22px;
+      background-color: #279;
+      color: #fff;
+      border: 0px;
+      border-radius: 3px;
+      padding: 20px;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+    button:hover{
+      background-color: #38a;
+    }
+
+    .passed {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    }
+
+    .notstart {
+    background-color: gray;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    }
+
+    .inprogress {
+    background-color: orange;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    }
+
+    .slide{
+      position: absolute;
+      left: 0px;
+      top: 0px;
+      width: 100%;
+      z-index: 1;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+    .active-slide{
+      opacity: 1;
+      z-index: 2;
+    }
+    .quiz-container{
+      position: relative;
+      height: 400px;
+      margin-top: 20px;
+    }
+
+
+  </style>
+</head>
+<body>
+    <h1>实词学习</h1>
+    <p>用户：{{ user }}</p>
+    {% for word in word_list %}
+    <a href="/s_word/preview" class=notstart>{{ word.sword }}</a>
+</body>
+</html>

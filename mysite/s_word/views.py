@@ -1,11 +1,30 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
+from .models import SWord
+from django.http import HttpResponse
+from django.template import loader
+from django.utils import timezone
+from django.conf import settings
+from django.shortcuts import redirect
 
 # Create your views here.
-from django.http import HttpResponse
-
 
 def index(request):
-    return HttpResponse("Hello, world. You're at the polls index.")
+    if not request.user.is_authenticated:
+        return redirect('/admin/login?next=%s' % (request.path))
+    
+    current_user = request.user
+
+    # get word list
+    word_list = SWord.objects.all().values('sword').distinct()
+
+    # prepare return page
+    template = loader.get_template('SWord/index.html')
+    context = {
+        'total_words': word_list,
+        'user': current_user.username
+    }
+    # return page
+    return HttpResponse(template.render(context, request))
