@@ -25,6 +25,27 @@ class SWordTest1Choice(models.Model):
     choice_txt = models.CharField(max_length=100)
     is_correct = models.IntegerField(default=0)
 
+# word related question count
+class SWordQuestionByWord(models.Model):
+    sword = models.CharField(max_length=100)
+    questioncount = models.IntegerField(default=0)
+
+    class Meta:
+        managed = False
+        db_table = "v_swordtestquestion_count"
+
+# user passed word count
+class SWordUserQuestionByWord(models.Model):
+    sword = models.CharField(max_length=100)
+    questioncount = models.IntegerField(default=0)
+    user_id = models.IntegerField(default=0)
+    passedcount = models.IntegerField(default=0)
+    status = models.CharField(max_length=100)
+
+    class Meta:
+        managed = False
+        db_table = "v_user_passed_question_count"
+
 class SWordTest(models.Model):
     sword = models.ForeignKey(SWord, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
