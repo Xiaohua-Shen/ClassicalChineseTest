@@ -120,6 +120,9 @@
     <a href="/s_word/word/?sword={{ word.sword }}" class={{ word.status }}>{{ word.sword }}</a>
     {% endfor %}
     <h1>实词学习: 未开始</h1>
+    {% for word in notstart_word_list %}
+    <a href="/s_word/word/?sword={{ word.sword }}" class=notstart>{{ word.sword }}</a>
+    {% endfor %}
 
 </body>
 </html>

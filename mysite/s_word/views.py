@@ -21,13 +21,13 @@ def index(request):
     start_word_list = SWordUserQuestionByWord.objects.filter(user_id=current_user.id)
 
     # get not start word list
-    # notstart_word_list = 
+    notstart_word_list = SWordQuestionByWord.objects.values('sword').difference(start_word_list.values('sword'))
 
     # prepare return page
     template = loader.get_template('s_word/index.html')
     context = {
         'start_word_list': start_word_list,
-        #'notstart_word_list': notstart_word_list
+        'notstart_word_list': notstart_word_list,
         'user': current_user.username
     }
     # return page
