@@ -31,7 +31,7 @@ select b.*, a.sword,a.sample from s_word_sword a, (select distinct sword_id, tes
 
 -- view of how many questions relate to one word
 create view v_swordtestquestion_count as 
-select sword, count(*) questioncount from v_swordtestquestion group by sword;
+select (select count(distinct(sword)) from s_word_sword t2 where t2.sword<=t1.sword ) as id,sword, count(*) questioncount from v_swordtestquestion t1 group by sword;
 
 -- view of how many questions relate to one word by test_type
 create view v_swordtestquestion_count_bytype as 
@@ -48,7 +48,8 @@ group by sword_id, sword, test_type, user_id;
 
 -- view user's how many passed question by word
 create view v_user_passed_question_count as
-select a.sword, a.user_id,count(*) passedcount, b.questioncount, 
+select (select count(distinct(sword)) from s_word_sword t2 where t2.sword<=a.sword ) as id,
+       a.sword, a.user_id,count(*) passedcount, b.questioncount, 
        (case when count(*) = b.questioncount then "passed" else "inprogress" end) status
 from v_user_passed_question a,
      v_swordtestquestion_count b
