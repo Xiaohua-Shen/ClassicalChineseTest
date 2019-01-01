@@ -57,7 +57,8 @@ def word(request):
         pinyin_test_status = "passed"
     elif pinyin_passed == 0:
         pinyin_test_status = "notstart"
-    elif pinyin_test_status = "inprogress"
+    else: 
+        pinyin_test_status = "inprogress"
 
     if word_class_questions == 0:
         word_class_test_status = "notest"
@@ -65,7 +66,8 @@ def word(request):
         word_class_test_status = "passed"
     elif word_class_passed == 0:
         word_class_test_status = "notstart"
-    elif word_class_test_status = "inprogress"
+    else:
+        word_class_test_status = "inprogress"
 
     if meaning_questions == 0:
         meaning_test_status = "notest"
@@ -73,7 +75,8 @@ def word(request):
         meaning_test_status = "passed"
     elif meaning_passed == 0:
         meaning_test_status = "notstart"
-    elif meaning_test_status = "inprogress"
+    else: 
+        meaning_test_status = "inprogress"
 
     # prepare return page
     template = loader.get_template('s_word/word.html')
