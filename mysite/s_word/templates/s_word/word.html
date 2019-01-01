@@ -156,13 +156,13 @@
     </div>
     <div id=actionarea>
     {% if meaning_list.count >= 1 %}
-    <a href="/s_word/test/?sword={{ sword }}&test_type=含义" class=notstart>测试含义</a>
+    <a href="/s_word/test/?sword={{ sword }}&test_type=含义" class={{ meaning_test_status }}>测试含义</a>
     {% endif %}
     {% if pinyin_list.count > 1 %}
-    <a href="/s_word/test/?sword={{ sword }}&test_type=拼音" class=notstart>测试拼音</a>
+    <a href="/s_word/test/?sword={{ sword }}&test_type=拼音" class={{ pinyin_test_status }}>测试拼音</a>
     {% endif %}
     {% if word_class_list.count > 1 %}
-    <a href="/s_word/test/?sword={{ sword }}&test_type=词性" class=notstart>测试词性</a>
+    <a href="/s_word/test/?sword={{ sword }}&test_type=词性" class={{ pinyin_test_status }}>测试词性</a>
     {% endif %}
     <a href="/s_word/">返回</a>
     </div>

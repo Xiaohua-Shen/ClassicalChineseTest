@@ -43,6 +43,38 @@ def word(request):
     word_class_list = sword_list.values('word_class').distinct()
     meaning_list = sword_list.values('meaning').distinct()
 
+    pinyin_questions = SWordTest1Choice.objects.filter(sword_id__in=sword_list, test_type='拼音').values('sword_id').distinct().count()
+    word_class_questions = SWordTest1Choice.objects.filter(sword_id__in=sword_list, test_type='词性').values('sword_id').distinct().count()
+    meaning_questions = SWordTest1Choice.objects.filter(sword_id__in=sword_list, test_type='含义').values('sword_id').distinct().count()
+
+    pinyin_passed = SWordTest.objects.filter(sword_id__in=sword_list, test_type='拼音', user_id=request.user.id, test_result=1).values('sword_id').distinct().count()
+    word_class_passed = SWordTest.objects.filter(sword_id__in=sword_list, test_type='词性', user_id=request.user.id, test_result=1).values('sword_id').distinct().count()
+    meaning_passed = SWordTest.objects.filter(sword_id__in=sword_list, test_type='含义', user_id=request.user.id, test_result=1).values('sword_id').distinct().count()
+
+    if pinyin_questions == 0:
+        pinyin_test_status = "notest"
+    elif pinyin_questions == pinyin_passed:
+        pinyin_test_status = "passed"
+    elif pinyin_passed == 0:
+        pinyin_test_status = "notstart"
+    elif pinyin_test_status = "inprogress"
+
+    if word_class_questions == 0:
+        word_class_test_status = "notest"
+    elif word_class_questions == word_class_passed:
+        word_class_test_status = "passed"
+    elif word_class_passed == 0:
+        word_class_test_status = "notstart"
+    elif word_class_test_status = "inprogress"
+
+    if meaning_questions == 0:
+        meaning_test_status = "notest"
+    elif meaning_questions == meaning_passed:
+        meaning_test_status = "passed"
+    elif meaning_passed == 0:
+        meaning_test_status = "notstart"
+    elif meaning_test_status = "inprogress"
+
     # prepare return page
     template = loader.get_template('s_word/word.html')
     context = {
@@ -51,6 +83,9 @@ def word(request):
         'word_class_list': word_class_list,
         'meaning_list': meaning_list,
         'user': request.user.username,
+        'pinyin_test_status': pinyin_test_status,
+        'word_class_test_status': word_class_test_status,
+        'meaning_test_status': meaning_test_status
     }
     # return page
     return HttpResponse(template.render(context, request))
