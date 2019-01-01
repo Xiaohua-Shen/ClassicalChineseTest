@@ -38,7 +38,8 @@ create view v_swordtestquestion_count as
 select t2.id, t1.sword, count(*) questioncount 
 from v_swordtestquestion t1, t_sword t2 
 where t1.sword=t2.sword
-group by t1.sword;
+group by t1.sword
+order by t2.id;
 
 -- view of how many questions relate to one word by test_type
 create view v_swordtestquestion_count_bytype as 
@@ -62,7 +63,8 @@ from v_user_passed_question a,
      t_sword c
 where a.sword=b.sword
 and b.sword=c.sword
-group by a.sword, a.user_id;
+group by a.sword, a.user_id
+order by c.id ;
 
 -- view user's how many passed question by word
 create view v_user_passed_question_count_bytype as
