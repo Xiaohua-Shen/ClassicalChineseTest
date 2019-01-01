@@ -91,6 +91,10 @@
     cursor: pointer;
     }
 
+    .failed {
+    color:red
+    }
+
     table {
       font-size: 18px;
       margin: 0 auto;
@@ -131,15 +135,21 @@
           <td>例句</td>
           <td>例句出处</td>
           <td>译文</td>
+          <td>错误次数</td>
         </tr>
         {% for sword in sword_list %}
-        <tr>
+        {% if sword.failcount > 0 %}
+        <tr class=failed>
+        {% else %}
+        <tr></tr>
+        {% endif %}
           <td>{{ sword.pinyin }}</td>
           <td>{{ sword.word_class }}</td>
           <td>{{ sword.meaning }}</td>
           <td>{{ sword.sample }}</td>
           <td>{{ sword.source }}</td>
           <td>{{ sword.translation }}</td>
+          <td>{{ sword.failcount }}</td>
         </tr>
         {% endfor %}
       </table>

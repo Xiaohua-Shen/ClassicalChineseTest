@@ -8,6 +8,8 @@ from django.template import loader
 from django.utils import timezone
 from django.conf import settings
 from django.shortcuts import redirect
+from django.db.models import Avg, F, Max, Min, Case, When, Sum, Count
+from django.db import models
 
 # Create your views here.
 
@@ -47,6 +49,8 @@ def word(request):
     pinyin_passed = SWordTest.objects.filter(sword_id__in=sword_list, test_type='拼音', user_id=request.user.id, test_result=1).values('sword_id').distinct().count()
     word_class_passed = SWordTest.objects.filter(sword_id__in=sword_list, test_type='词性', user_id=request.user.id, test_result=1).values('sword_id').distinct().count()
     meaning_passed = SWordTest.objects.filter(sword_id__in=sword_list, test_type='含义', user_id=request.user.id, test_result=1).values('sword_id').distinct().count()
+
+    sword_list= sword_list.annotate(failcount=Count(Case(When(swordtest__user_id=request.user.id,swordtest__test_result=0,then=F('swordtest__test_result')),output_field=models.IntegerField())))
 
     if pinyin_questions == 0:
         pinyin_test_status = "notest"
