@@ -116,6 +116,41 @@
 <body>
     <h1>实词学习：{{ sword }}</h1>
     <p>用户：{{ user }}</p>
+    <div id=overview>
+      <table>
+        <tr>
+          <td>实词</td>
+          <td>含义</td>
+          <td>词性</td>
+          <td>拼音</td>
+        </tr>
+        <tr>
+            <td>{{ sword }}</td>
+            <td>
+                <ul>
+                    {% for meaning in meaning_list %}
+                    <li>{{meaning.meaning}}</li>
+                    {% endfor %}
+                </ul>
+            </td>
+            <td>
+                <ul>
+                    {% for word_class in word_class_list %}
+                    <li>{{word_class.word_class}}</li>
+                    {% endfor %}
+                </ul>
+            </td>
+            <td>
+                <ul>
+                    {% for pinyin in pinyin_list %}
+                    <li>{{pinyin.pinyin}}</li>
+                    {% endfor %}
+                </ul>
+            </td>
+        </tr>>
+      </table>
+    </div>
+    <div id=actionarea>
     {% if meaning_list.count >= 1 %}
     <a href="/s_word/test/?sword={{ sword }}&test_type=含义" class=notstart>测试含义</a>
     {% endif %}
@@ -126,5 +161,6 @@
     <a href="/s_word/test/?sword={{ sword }}&test_type=词性" class=notstart>测试词性</a>
     {% endif %}
     <a href="/s_word/">返回</a>
+    </div>
 </body>
 </html>
