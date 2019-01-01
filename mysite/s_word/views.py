@@ -39,9 +39,6 @@ def word(request):
     
     sword = request.GET.get('sword', '')
     sword_list = SWord.objects.filter(sword=sword)
-    pinyin_list = sword_list.exclude(pinyin="").values('pinyin').distinct()
-    word_class_list = sword_list.values('word_class').distinct()
-    meaning_list = sword_list.values('meaning').distinct()
 
     pinyin_questions = SWordTest1Choice.objects.filter(sword_id__in=sword_list, test_type='拼音').values('sword_id').distinct().count()
     word_class_questions = SWordTest1Choice.objects.filter(sword_id__in=sword_list, test_type='词性').values('sword_id').distinct().count()
@@ -82,9 +79,7 @@ def word(request):
     template = loader.get_template('s_word/word.html')
     context = {
         'sword': sword,
-        'pinyin_list': pinyin_list,
-        'word_class_list': word_class_list,
-        'meaning_list': meaning_list,
+        'sword_list': sword_list,
         'user': request.user.username,
         'pinyin_test_status': pinyin_test_status,
         'word_class_test_status': word_class_test_status,

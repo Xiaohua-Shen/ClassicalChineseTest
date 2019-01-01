@@ -123,45 +123,34 @@
     <div id=overview>
       <table border=1>
         <tr>
-          <td>实词</td>
-          <td>含义</td>
-          <td>词性</td>
+          <td rowspan="{{ sword_list.count }}">{{ sword }}</td>
           <td>拼音</td>
+          <td>词性</td>
+          <td>含义</td>
+          <td>例句</td>
+          <td>例句出处</td>
+          <td>译文</td>
         </tr>
+        {% for sword in sword_list %}
         <tr>
-            <td>{{ sword }}</td>
-            <td>
-                <ul>
-                    {% for meaning in meaning_list %}
-                    <li>{{meaning.meaning}}</li>
-                    {% endfor %}
-                </ul>
-            </td>
-            <td>
-                <ul>
-                    {% for word_class in word_class_list %}
-                    <li>{{word_class.word_class}}</li>
-                    {% endfor %}
-                </ul>
-            </td>
-            <td>
-                <ul>
-                    {% for pinyin in pinyin_list %}
-                    <li>{{pinyin.pinyin}}</li>
-                    {% endfor %}
-                </ul>
-            </td>
+          <td>{{ sword.pinyin }}</td>
+          <td>{{ sword.word_class }}</td>
+          <td>{{ sword.meaning }}</td>
+          <td>{{ sword.sample }}</td>
+          <td>{{ sword.source }}</td>
+          <td>{{ sword.translation }}</td>
         </tr>
+        {% endfor %}
       </table>
     </div>
     <div id=actionarea>
-    {% if meaning_list.count >= 1 %}
+    {% if meaning_test_status != "notest" %}
     <a href="/s_word/test/?sword={{ sword }}&test_type=含义" class={{ meaning_test_status }}>测试含义</a>
     {% endif %}
-    {% if pinyin_list.count > 1 %}
+    {% if pinyin_test_status != "notest" %}
     <a href="/s_word/test/?sword={{ sword }}&test_type=拼音" class={{ pinyin_test_status }}>测试拼音</a>
     {% endif %}
-    {% if word_class_list.count > 1 %}
+    {% if word_class_test_status != "notest" %}
     <a href="/s_word/test/?sword={{ sword }}&test_type=词性" class={{ word_class_test_status }}>测试词性</a>
     {% endif %}
     <a href="/s_word/">返回</a>
