@@ -117,11 +117,11 @@
     <p>用户：{{ user }}</p>
     <h1>实词学习: 进行中</h1>
     {% for word in start_word_list %}
-    <a href="/s_word/word/?sword={{ word.sword }}" class={{ word.status }}>{{ word.sword }}<br>{{ word.questioncount }}</a>
+    <a href="/s_word/word/?sword={{ word.sword }}" class={{ word.status }}>{{ word.sword }}<br>{{ word.passedcount }}/{{ word.questioncount }}</a>
     {% endfor %}
     <h1>实词学习: 未开始</h1>
     {% for word in notstart_word_list %}
-    <a href="/s_word/word/?sword={{ word.sword }}" class=notstart>{{ word.sword }}</a>
+    <a href="/s_word/word/?sword={{ word.sword }}" class=notstart>{{ word.sword }}<br>0/{{ word.questioncount }}</a>
     {% endfor %}
 
 </body>

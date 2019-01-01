@@ -21,7 +21,7 @@ def index(request):
     start_word_list = SWordUserQuestionByWord.objects.filter(user_id=current_user.id)
 
     # get not start word list
-    notstart_word_list = SWordQuestionByWord.objects.values('sword').difference(start_word_list.values('sword'))
+    notstart_word_list = SWordQuestionByWord.objects.exclude(id_in=start_word_list)
 
     # prepare return page
     template = loader.get_template('s_word/index.html')
