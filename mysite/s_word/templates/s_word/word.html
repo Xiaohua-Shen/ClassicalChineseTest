@@ -123,7 +123,7 @@
     <div id=overview>
       <table border=1>
         <tr>
-          <td rowspan="{{ sword_list.count }}">{{ sword }}</td>
+          <td rowspan="{{ sword_list.count|add:1 }}">{{ sword }}</td>
           <td>拼音</td>
           <td>词性</td>
           <td>含义</td>
