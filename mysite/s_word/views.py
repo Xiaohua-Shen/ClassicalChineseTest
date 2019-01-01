@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.shortcuts import get_object_or_404, render
-from .models import SWord,SWordTest,SWordTest1Choice
+from .models import SWord,SWordTest,SWordTest1Choice,SWordUserQuestionByWord,SWordQuestionByWord
 from django.http import HttpResponse
 from django.template import loader
 from django.utils import timezone
@@ -17,13 +17,17 @@ def index(request):
     
     current_user = request.user
 
-    # get word list
-    word_list = SWord.objects.all().values('sword').distinct()
+    # get inprogress or passed word list
+    start_word_list = SWordUserQuestionByWord.objects.filter(user_id=current_user.id)
+
+    # get not start word list
+    # notstart_word_list = 
 
     # prepare return page
     template = loader.get_template('s_word/index.html')
     context = {
-        'word_list': word_list,
+        'start_word_list': start_word_list,
+        #'notstart_word_list': notstart_word_list
         'user': current_user.username
     }
     # return page

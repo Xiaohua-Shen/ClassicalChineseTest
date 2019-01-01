@@ -114,10 +114,12 @@
   </style>
 </head>
 <body>
-    <h1>实词学习</h1>
+    <h1>实词学习: 进行中</h1>
     <p>用户：{{ user }}</p>
-    {% for word in word_list %}
-    <a href="/s_word/word/?sword={{ word.sword }}" class=notstart>{{ word.sword }}</a>
+    {% for word in start_word_list %}
+    <a href="/s_word/word/?sword={{ word.sword }}" class={{ word.status }}>{{ word.sword }}</a>
     {% endfor %}
+    <h1>实词学习: 未开始</h1>
+
 </body>
 </html>
