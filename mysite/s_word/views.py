@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.shortcuts import get_object_or_404, render
-from .models import SWord,SWordTest,SWordTest1Choice,SWordUserQuestionByWord,SWordQuestionByWord,SWordTestScore,Question
+from .models import SWord,SWordTest,SWordTest1Choice,SWordUserQuestionByWord,SWordQuestionByWord,SWordTestScore,Question,SWordPassedQuestion
 from django.http import HttpResponse
 from django.template import loader
 from django.utils import timezone
@@ -10,6 +10,7 @@ from django.conf import settings
 from django.shortcuts import redirect
 from django.db.models import Avg, F, Max, Min, Case, When, Sum, Count
 from django.db import models
+import random
 
 # Create your views here.
 
@@ -115,18 +116,16 @@ def errortest(request):
     if not request.user.is_authenticated:
         return redirect('/admin/login?next=%s' % (request.path))
     
-    error_list = SWordTestScore.objects.filter(user_id=request.user.id, score__lt=0).values('id')
-    highest_score_list = error_list[:10]
-    error_count = error_list.count()
+    lowest_score_list = errorSWordTestScore.objects.filter(user_id=request.user.id, score__lt=0).values('id')_list[:10]
 
-    question_list = Question.objects.filter(id__in=highest_score_list)
+    question_list = Question.objects.filter(id__in=lowest_score_list)
 
     # prepare return page
     template = loader.get_template('s_word/errortest.html')
     context = {
         'question_list': question_list,
         'user': request.user.username,
-        'error_count': error_count,
+        'title': "错题练习"
      }
     # return page
     return HttpResponse(template.render(context, request))
@@ -135,14 +134,16 @@ def randomtest(request):
     if not request.user.is_authenticated:
         return redirect('/admin/login?next=%s' % (request.path))
     
-    error_list = SWordTestScore.objects.filter(user_id=request.user.id, score__lt=0).values('id')[:10]
-    question_list = Question.objects.filter(id__in=error_list)
+    q_ids = SWordPassedQuestion.objects.filter(user_id=request.user.id).values('id')
+    r_ids = random.sample(q_ids, 10)
+    question_list = Question.objects.filter(id__in=r_ids)
 
     # prepare return page
     template = loader.get_template('s_word/errortest.html')
     context = {
         'question_list': question_list,
         'user': request.user.username,
+        'title': "随机练习"
      }
     # return page
     return HttpResponse(template.render(context, request))

@@ -63,6 +63,7 @@ class SWordTest(models.Model):
     test_answer = models.CharField(max_length=100,default="")
     test_type = models.CharField(max_length=10)
 
+# 错题排序
 class SWordTestScore(models.Model):
     sword_id = models.IntegerField(default=0)
     user_id = models.IntegerField(default=0)
@@ -72,3 +73,14 @@ class SWordTestScore(models.Model):
     class Meta:
         managed = False
         db_table = "v_user_question_score"
+
+# 随机题（从通过的题中选）
+class SWordPassedQuestion(models.Model):
+    sword_id = models.IntegerField(default=0)
+    user_id = models.IntegerField(default=0)
+    test_type = models.CharField(max_length=10)
+    sword = models.CharField(max_length=10)
+
+    class Meta:
+        managed = False
+        db_table = "v_user_passed_question"

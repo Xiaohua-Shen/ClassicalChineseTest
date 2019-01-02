@@ -26,12 +26,14 @@ insert into s_word_swordtest1choice(sword_id, test_type, choice_txt, is_correct)
 
 -- create word table to provide id
 CREATE TABLE "t_sword" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "sword" varchar(4) NOT NULL);
+create unique index t_sword_pk on t_sword('sword');
 insert into t_sword(sword) select distinct sword from s_word_sword;
 
 -- create question table to provide id
 CREATE TABLE "t_question" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, 
                            "sword_id" integer NOT NULL REFERENCES "s_word_sword" ("id"),
                            "test_type" varchar(10) NOT NULL);
+create unique index t_question_pk on t_question('sword_id','test_type');
 insert into t_question(sword_id,test_type) select distinct sword_id, test_type from s_word_swordtest1choice;
 ß
 -- create view 
@@ -53,12 +55,15 @@ select sword, test_type, count(*) questioncount from v_swordtestquestion group b
 
 -- view for user passed question list 
 create view v_user_passed_question as
-select sword_id, sword, test_type, user_id, max(test_date) pass_date
+select c.id, a.sword_id, sword, a.test_type, user_id, max(test_date) pass_date
 from s_word_swordtest a,
-     s_word_sword b
+     s_word_sword b,
+     t_question c
 where a.test_result=1
 and a.sword_id=b.id
-group by sword_id, sword, test_type, user_id;
+and a.sword_id=c.sword_id
+and a.test_type=c.test_type
+group by a.sword_id, sword, a.test_type, user_id;
 
 -- view user's how many passed question by word
 create view v_user_passed_question_count as
