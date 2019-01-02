@@ -131,7 +131,7 @@ def errortest(request):
     # return page
     return HttpResponse(template.render(context, request))
 
-def random(request):
+def randomtest(request):
     if not request.user.is_authenticated:
         return redirect('/admin/login?next=%s' % (request.path))
     
