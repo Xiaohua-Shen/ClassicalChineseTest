@@ -220,12 +220,12 @@
         });
         
         $('#testresultform'+questionNumber).submit();
-        nextBatchButton = "inline-block";
 
       });
 
       // show number of correct answers out of total
       resultsContainer.innerHTML = `共 ${myQuestions.length} 题，答对 ${numCorrect} 题`;
+      nextBatchButton = "inline-block";
     }
 
     function showSlide(n) {
