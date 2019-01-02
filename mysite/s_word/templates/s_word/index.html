@@ -115,7 +115,10 @@
 </head>
 <body>
     <p>用户：{{ user }}</p>
-    <h1>实词学习: 进行中</h1>
+    <h1>实词学习: 复习</h1>
+    <a href="/s_word/errortest/">错题测试</a>
+    <a href="/s_word/randomtest/">随机测试</a>
+    <h1>实词学习: 进行中和已完成</h1>
     {% for word in start_word_list %}
     <a href="/s_word/word/?sword={{ word.sword }}" class={{ word.status }}>{{ word.sword }}<br>{{ word.passedcount }}/{{ word.questioncount }}</a>
     {% endfor %}
