@@ -134,9 +134,8 @@ def randomtest(request):
     if not request.user.is_authenticated:
         return redirect('/admin/login?next=%s' % (request.path))
     
-    q_ids = SWordPassedQuestion.objects.filter(user_id=request.user.id).values('id')
-    r_ids = random.sample(q_ids, 10)
-    question_list = Question.objects.filter(id__in=r_ids)
+    q_ids = SWordPassedQuestion.objects.filter(user_id=request.user.id).values('id').order_by('?')[0:10]
+    question_list = Question.objects.filter(id__in=q_ids)
 
     # prepare return page
     template = loader.get_template('s_word/errortest.html')
