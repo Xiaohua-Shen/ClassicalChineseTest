@@ -225,7 +225,7 @@
 
       // show number of correct answers out of total
       resultsContainer.innerHTML = `共 ${myQuestions.length} 题，答对 ${numCorrect} 题`;
-      nextBatchButton = "inline-block";
+      nextBatchButton.style.display = "inline-block";
     }
 
     function showSlide(n) {
@@ -235,7 +235,7 @@
 
       if (currentSlide === 0) {
         previousButton.style.display = "none";
-        nextBatchButton = "none";
+        nextBatchButton.style.display = "none";
       } else {
         previousButton.style.display = "inline-block";
       }
