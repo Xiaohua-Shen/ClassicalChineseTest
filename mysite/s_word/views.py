@@ -116,7 +116,7 @@ def errortest(request):
     if not request.user.is_authenticated:
         return redirect('/admin/login?next=%s' % (request.path))
     
-    lowest_score_list = errorSWordTestScore.objects.filter(user_id=request.user.id, score__lt=0).values('id')_list[:10]
+    lowest_score_list = SWordTestScore.objects.filter(user_id=request.user.id, score__lt=0).values('id')[:10]
 
     question_list = Question.objects.filter(id__in=lowest_score_list)
 
