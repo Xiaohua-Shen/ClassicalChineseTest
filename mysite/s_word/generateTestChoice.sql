@@ -28,6 +28,12 @@ insert into s_word_swordtest1choice(sword_id, test_type, choice_txt, is_correct)
 CREATE TABLE "t_sword" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "sword" varchar(4) NOT NULL);
 insert into t_sword(sword) select distinct sword from s_word_sword;
 
+-- create question table to provide id
+CREATE TABLE "t_question" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, 
+                           "sword_id" integer NOT NULL REFERENCES "s_word_sword" ("id"),
+                           "test_type" varchar(10) NOT NULL);
+insert into t_question(sword_id,test_type) select distinct sword_id, test_type from s_word_swordtest1choice;
+ß
 -- create view 
 -- view of question list
 create view v_swordtestquestion as
@@ -91,13 +97,16 @@ and   a.test_date=b.test_date;
 
 -- 错误分值-0.6，正确的0.4，给同一试题所有得分相加，以及加上最近一次答题是错误的题目（扣1分）。 总分值<0的题需要重新复习。
 create view v_user_question_score as 
-select a.sword_id, a.user_id, a.test_type, (score + b.test_result - 1 ) score
+select c.id, a.sword_id, a.user_id, a.test_type, (score + b.test_result - 1 ) score
 from
     (select sword_id, user_id, test_type, sum((test_result-0.6)) score
     from s_word_swordtest
     group by sword_id, user_id, test_type) a,
-    v_user_latest_testresult_by_question b
+    v_user_latest_testresult_by_question b,
+    t_question c
 where a.sword_id=b.sword_id
 and   a.user_id=b.user_id
 and   a.test_type=b.test_type
+and  a.sword_id=c.sword_id
+and  a.test_type=c.test_type
 order by score;

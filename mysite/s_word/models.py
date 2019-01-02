@@ -19,8 +19,17 @@ class SWord(models.Model):
     def __str__(self):
         return self.sword
 
+class Question(models.Model):
+    sword = models.ForeignKey(SWord, on_delete=models.CASCADE)
+    test_type = models.CharField(max_length=10)
+
+    class Meta:
+        managed = False
+        db_table = "t_question"
+
 class SWordTest1Choice(models.Model):
     sword = models.ForeignKey(SWord, on_delete=models.CASCADE)
+    question_id = models.IntegerField(default=0)
     test_type = models.CharField(max_length=10)
     choice_txt = models.CharField(max_length=100)
     is_correct = models.IntegerField(default=0)
@@ -53,3 +62,13 @@ class SWordTest(models.Model):
     test_result = models.IntegerField(default=0)
     test_answer = models.CharField(max_length=100,default="")
     test_type = models.CharField(max_length=10)
+
+class SWordTestScore(models.Model):
+    sword_id = models.IntegerField(default=0)
+    user_id = models.IntegerField(default=0)
+    test_type = models.CharField(max_length=10)
+    score = models.FloatField(default=0)
+
+    class Meta:
+        managed = False
+        db_table = "v_user_question_score"
