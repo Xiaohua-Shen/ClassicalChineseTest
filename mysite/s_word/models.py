@@ -29,7 +29,7 @@ class Question(models.Model):
 
 class SWordTest1Choice(models.Model):
     sword = models.ForeignKey(SWord, on_delete=models.CASCADE)
-    question_id = models.IntegerField(default=0)
+    question_id = models.ForeignKey(Question, on_delete=models.CASCADE)
     test_type = models.CharField(max_length=10)
     choice_txt = models.CharField(max_length=100)
     is_correct = models.IntegerField(default=0)
