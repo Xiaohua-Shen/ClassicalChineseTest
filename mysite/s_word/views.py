@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.shortcuts import get_object_or_404, render
-from .models import SWord,SWordTest,SWordTest1Choice,SWordUserQuestionByWord,SWordQuestionByWord,SWordTestScore
+from .models import SWord,SWordTest,SWordTest1Choice,SWordUserQuestionByWord,SWordQuestionByWord,SWordTestScore,Question
 from django.http import HttpResponse
 from django.template import loader
 from django.utils import timezone
@@ -108,6 +108,22 @@ def test(request):
         'user': request.user.username,
         'test_type': test_type
     }
+    # return page
+    return HttpResponse(template.render(context, request))
+
+def errortest(request):
+    if not request.user.is_authenticated:
+        return redirect('/admin/login?next=%s' % (request.path))
+    
+    error_list = SWordTestScore.objects.filter(user_id=request.user.id).values('id')[:10]
+    question_list = Question.objects.filter(id__in=error_list)
+
+    # prepare return page
+    template = loader.get_template('s_word/errortest.html')
+    context = {
+        'question_list': question_list,
+        'user': request.user.username,
+     }
     # return page
     return HttpResponse(template.render(context, request))
 
