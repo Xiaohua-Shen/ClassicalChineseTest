@@ -115,6 +115,26 @@ def errortest(request):
     if not request.user.is_authenticated:
         return redirect('/admin/login?next=%s' % (request.path))
     
+    error_list = SWordTestScore.objects.filter(user_id=request.user.id, score__lt=0).values('id')
+    highest_score_list = error_list[:10]
+    error_count = error_list.count()
+
+    question_list = Question.objects.filter(id__in=highest_score_list)
+
+    # prepare return page
+    template = loader.get_template('s_word/errortest.html')
+    context = {
+        'question_list': question_list,
+        'user': request.user.username,
+        'error_count': error_count,
+     }
+    # return page
+    return HttpResponse(template.render(context, request))
+
+def random(request):
+    if not request.user.is_authenticated:
+        return redirect('/admin/login?next=%s' % (request.path))
+    
     error_list = SWordTestScore.objects.filter(user_id=request.user.id, score__lt=0).values('id')[:10]
     question_list = Question.objects.filter(id__in=error_list)
 

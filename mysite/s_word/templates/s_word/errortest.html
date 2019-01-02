@@ -78,7 +78,7 @@
 <body>
 {% load shuffle %}
 {% if question_list %}
-<h1>实词复习：错题练习（共 {{ question_list.count }} 题）</h1>
+<h1>实词复习：错题练习（本组 {{ question_list.count }} 题，共 {{ error_count }} 题 ）</h1>
 <div id="results"></div>
 <div class="quiz-container">
   <div id="quiz"></div>
@@ -86,6 +86,7 @@
 <button id="previous">上一题</button>
 <button id="next">下一题</button>
 <button id="submit">提交答案</button>
+<button id="nextBatch">下一组</button>
 <a href="/s_word/">返回</a>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -219,6 +220,7 @@
         });
         
         $('#testresultform'+questionNumber).submit();
+        nextBatchButton = "inline-block";
 
       });
 
@@ -233,6 +235,7 @@
 
       if (currentSlide === 0) {
         previousButton.style.display = "none";
+        nextBatchButton = "none";
       } else {
         previousButton.style.display = "inline-block";
       }
@@ -254,9 +257,14 @@
       showSlide(currentSlide - 1);
     }
 
+    function showNextBatch() {
+      location.reload();
+    }
+
     const quizContainer = document.getElementById("quiz");
     const resultsContainer = document.getElementById("results");
     const submitButton = document.getElementById("submit");
+    const nextBatchButton = document.getElementById("nextBatch");
 
     // display quiz right away
     buildQuiz();
@@ -272,6 +280,7 @@
     submitButton.addEventListener("click", showResults);
     previousButton.addEventListener("click", showPreviousSlide);
     nextButton.addEventListener("click", showNextSlide);
+    nextBatchButton.addEventListener("click", showNextBatch);
   })();
 
 
