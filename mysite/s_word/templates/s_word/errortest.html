@@ -78,7 +78,7 @@
 <body>
 {% load shuffle %}
 {% if question_list %}
-<h1>实词复习：错题练习（最多10题）</h1>
+<h1>实词复习：错题练习（共 {{ question_list.count }} 题）</h1>
 <div id="results"></div>
 <div class="quiz-container">
   <div id="quiz"></div>
