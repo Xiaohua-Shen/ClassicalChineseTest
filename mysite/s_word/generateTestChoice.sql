@@ -1,3 +1,24 @@
+-- 生成实词表并插入数据
+CREATE TABLE "t_sword" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "sword" varchar(4) NOT NULL);
+create unique index t_sword_pk on t_sword('sword');
+insert into t_sword(sword) select distinct sword from tmp_sword;
+
+-- 生成实词含义表并插入数据
+CREATE TABLE "t_swordmeaning" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, 
+                               "word_id" integer NOT NULL REFERENCES "t_sword" ("id"),
+                               "pinyin" varchar(4) NOT NULL, 
+                               "word_class" varchar(10) NOT NULL, 
+                               "meaning" varchar(100) NOT NULL,
+                               "difficulty" integer NOT NULL default 0);
+create unique index t_swordmeaning_pk on t_swordmeaning(word_id,pinyin,word_class,meaning);
+insert into t_swordmeaning(word_id,pinyin,word_class,meaning) 
+select distinct b.id, a.pinyin, a. word_class, a.meaning
+from tmp_sword a, t_sword b
+where a.sword=b.sword;
+
+-- 插入数据到例句表
+
+
 -- generate pinyin test
 insert into s_word_swordtest1choice(sword_id, test_type, choice_txt, is_correct) 
     select a.id,'拼音', b.pinyin, a.pinyin=b.pinyin 
@@ -24,10 +45,7 @@ insert into s_word_swordtest1choice(sword_id, test_type, choice_txt, is_correct)
     where a.sword=b.sword
     and a.sample<>"";
 
--- create word table to provide id
-CREATE TABLE "t_sword" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "sword" varchar(4) NOT NULL);
-create unique index t_sword_pk on t_sword('sword');
-insert into t_sword(sword) select distinct sword from s_word_sword;
+
 
 -- create question table to provide id
 CREATE TABLE "t_question" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, 
