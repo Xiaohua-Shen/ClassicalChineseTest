@@ -36,7 +36,7 @@ class SWord(models.Model):
     sample = models.CharField(max_length=100)
     source = models.CharField(max_length=100)
     translation = models.CharField(max_length=100)
-    swordmeaning = models.ForeignKey(SWordMeaning, on_delete=models.CASCADE)
+    swordmeaning = models.ForeignKey(SWordMeaning, on_delete=models.CASCADE, default="")
 
     def __str__(self):
         return self.sword
