@@ -19,6 +19,14 @@ where a.sword=b.sword;
 -- 插入数据到例句表
 
 
+-- 生成例句对应的题目
+CREATE TABLE "t_question" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, 
+                           "sword_id" integer NOT NULL REFERENCES "s_word_sword" ("id"),
+                           "test_type" varchar(10) NOT NULL);
+create unique index t_question_pk on t_question('sword_id','test_type');
+insert into t_question(sword_id,test_type) select distinct sword_id, test_type from s_word_swordtest1choice;
+
+
 -- generate pinyin test
 insert into s_word_swordtest1choice(sword_id, test_type, choice_txt, is_correct) 
     select a.id,'拼音', b.pinyin, a.pinyin=b.pinyin 
@@ -46,14 +54,6 @@ insert into s_word_swordtest1choice(sword_id, test_type, choice_txt, is_correct)
     and a.sample<>"";
 
 
-
--- create question table to provide id
-CREATE TABLE "t_question" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, 
-                           "sword_id" integer NOT NULL REFERENCES "s_word_sword" ("id"),
-                           "test_type" varchar(10) NOT NULL);
-create unique index t_question_pk on t_question('sword_id','test_type');
-insert into t_question(sword_id,test_type) select distinct sword_id, test_type from s_word_swordtest1choice;
-ß
 -- create view 
 -- view of question list
 create view v_swordtestquestion as
