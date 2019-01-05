@@ -21,7 +21,8 @@ def index(request):
     current_user = request.user
 
     # get inprogress or passed word list
-    inprogress_word_list = SWordUserQuestionByWord.objects.filter(user_id=current_user.id, status="inprogress")
+    start_word_list = SWordUserQuestionByWord.objects.filter(user_id=current_user.id)
+    inprogress_word_list = start_word_list.filter(status="inprogress")
 
     # get not start word list
     notstart_word_list = SWordQuestionByWord.objects.exclude(id__in=start_word_list)
