@@ -239,19 +239,19 @@
         $('#testresultform'+questionNumber).submit();
 
         // submit test result to server (关于例句, 改选的没选和选错的都要标记)
-        for ( answer in userAnswer){
+        userAnswer.forEach((answer, answerNumber) => {
           if (answer in currentQuestion.correctAnswer) {
             sendResult( answer, 1);
           } else {
             sendResult( answer, 0);
           }
-        }
+        });
 
-        for ( answer in currentQuestion.correctAnswer) {
+        currentQuestion.correctAnswer.forEach((answer, answerNumber) => {
           if (!(answer in userAnswer)) {
             sendResult( answer, 0)
           }
-        }
+        });
 
       });
 
