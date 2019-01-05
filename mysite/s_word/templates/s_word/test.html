@@ -79,7 +79,6 @@
 {% load shuffle %}
 {% if word_list %}
 <h1>{{ test_type }}：<b>{{ sword }}</b></h1>
-<div id="results"></div>
 <div class="quiz-container">
   <div id="quiz"></div>
 </div>
@@ -155,6 +154,7 @@
                 <input type='hidden' name="test_result" value="" />
                 <input type='hidden' name="question_id_id" value=${currentQuestion.question_id} />
             </form>
+            <div id="results${questionNumber}"></div>
           </div>`
         );
       });
@@ -177,6 +177,7 @@
       currentQuestion = myQuestions[questionNumber];
       
         // find selected answer
+        const resultsContainer = document.getElementById(`results${questionNumber}`);
         const answerContainer = answerContainers[questionNumber];
         const selector = `input[name=question${questionNumber}]:checked`;
         const userAnswer = (answerContainer.querySelector(selector) || {}).value;
@@ -263,7 +264,6 @@
     }
 
     const quizContainer = document.getElementById("quiz");
-    const resultsContainer = document.getElementById("results");
     const submitButton = document.getElementById("submit");
 
     // display quiz right away
