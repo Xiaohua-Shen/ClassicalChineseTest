@@ -93,7 +93,7 @@
 
   (function() {
     const myQuestions = [
-    {% for wquestion in question_lists|shuffle %}
+    {% for wquestion in question_list|shuffle %}
       {
         question: "<b>{{ sword }}</b>有<b>{{ wquestion.meaning|linebreaksbr }}【{{ wquestion.word_class|linebreaksbr }}</b>的意思，以下那几句中的{{ sword }}是这个意思？",
         answers: [
