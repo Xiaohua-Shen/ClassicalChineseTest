@@ -240,7 +240,7 @@
 
         // submit test result to server (关于例句, 改选的没选和选错的都要标记)
         userAnswer.forEach((answer, answerNumber) => {
-          if (answer in currentQuestion.correctAnswer) {
+          if (currentQuestion.correctAnswer.includes(answer)) {
             sendResult( answer, 1);
           } else {
             sendResult( answer, 0);
@@ -248,7 +248,7 @@
         });
 
         currentQuestion.correctAnswer.forEach((answer, answerNumber) => {
-          if (!(answer in userAnswer)) {
+          if (!(userAnswer.includes(answer))) {
             sendResult( answer, 0)
           }
         });
