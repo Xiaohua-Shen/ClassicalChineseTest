@@ -98,7 +98,7 @@
         question: "<b>{{ sword }}</b>有<b>{{ wquestion.meaning|linebreaksbr }}【{{ wquestion.word_class|linebreaksbr }}</b>的意思，以下那几句中的{{ sword }}是这个意思？",
         answers: [
           {% for choice in choice_list|shuffle %}
-            [{{ choice.id }}, "{{ choice.sample|linebreaksbr }}<small>{{ choice.sample|source }}</small>"],
+            [{{ choice.id }}, "{{ choice.sample|linebreaksbr }}<small>{{ choice.source|linebreaksbr }}</small>"],
           {% endfor %}
         ],
         correctAnswer: [
