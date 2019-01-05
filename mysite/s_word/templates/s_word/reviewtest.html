@@ -116,6 +116,57 @@
     {% endfor %}
     ];
 
+    //
+    function initSubmitResultForm() {
+      myQuestions.forEach((currentQuestion, questionNumber) => {
+        $('#testresultform'+questionNumber).submit(function(e) {
+
+        e.preventDefault(); // avoid to execute the actual submit of the form.
+
+        var form = $(this);
+        var url = form.attr('action');
+
+        $.ajax({
+              method: "POST",
+              url: url,
+              data: form.serialize(), // serializes the form's elements.
+              }).done(function(data)
+              {
+                console.log('Submission was successful.');
+                console.log(data);
+              }).fail(function (data) {
+                console.log('An error occurred.');
+                console.log(data);
+              });
+        });
+      });
+
+      $('#choiceresultform').submit(function(e) {
+
+      e.preventDefault(); // avoid to execute the actual submit of the form.
+
+      var form = $(this);
+      var url = form.attr('action');
+
+      $.ajax({
+            method: "POST",
+            url: url,
+            data: form.serialize(), // serializes the form's elements.
+            }).done(function(data)
+            {
+              console.log('Submission was successful.');
+              console.log(data);
+            }).fail(function (data) {
+              console.log('An error occurred.');
+              console.log(data);
+            });
+      });
+
+    }
+
+    //
+
+
     function buildQuiz() {
       // we'll need a place to store the HTML output
       const output = [];
@@ -157,26 +208,8 @@
     // 记录每个选项是否正确选择
     function sendResult(choiceID, testResult) {
 
-      $('#choiceresultform').submit(function(e) {
-
-      e.preventDefault(); // avoid to execute the actual submit of the form.
-
       $('input[name="test_result"]').val(testResult);
-      var form = $(this);
-
-      $.ajax({
-            method: "POST",
-            url: `/s_word/${choiceID}/result/`,
-            data: form.serialize(), // serializes the form's elements.
-            }).done(function(data)
-            {
-              console.log('Submission was successful.');
-              console.log(data);
-            }).fail(function (data) {
-              console.log('An error occurred.');
-              console.log(data);
-            });
-      });
+      $('#choiceresultform').attr('action', `/s_word/${choiceID}/result/`)
 
       $('#choiceresultform').submit();
     }
@@ -211,31 +244,8 @@
           answerContainers[questionNumber].style.color = "red";
         }
 
-        // set test result form data
-        document.getElementsByName('test_meaning_result')[questionNumber].value = is_correct
-
         // submit test result to server (关于含义)
-        $('#testresultform'+questionNumber).submit(function(e) {
-
-          e.preventDefault(); // avoid to execute the actual submit of the form.
-
-          var form = $(this);
-          var url = form.attr('action');
-
-          $.ajax({
-                method: "POST",
-                url: url,
-                data: form.serialize(), // serializes the form's elements.
-                }).done(function(data)
-                {
-                  console.log('Submission was successful.');
-                  console.log(data);
-                }).fail(function (data) {
-                  console.log('An error occurred.');
-                  console.log(data);
-                });
-        });
-        
+        document.getElementsByName('test_meaning_result')[questionNumber].value = is_correct
         $('#testresultform'+questionNumber).submit();
 
         // submit test result to server (关于例句, 改选的没选和选错的都要标记)
@@ -293,6 +303,7 @@
 
     // display quiz right away
     buildQuiz();
+    initSubmitResultForm();
 
     const previousButton = document.getElementById("previous");
     const nextButton = document.getElementById("next");
