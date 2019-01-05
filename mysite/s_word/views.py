@@ -181,7 +181,7 @@ def result(request, word_id):
     # return page 
     return HttpResponse("test result is recorded")
 
-def result(request, word_id):
+def reviewresult(request, word_id):
     swordmeaning = get_object_or_404(SWordMeaning, pk=word_id)
     # record test result to db
     SWordReviewTest.objects.create(user_id=request.user.id,
