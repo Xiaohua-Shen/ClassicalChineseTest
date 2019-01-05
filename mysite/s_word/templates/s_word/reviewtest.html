@@ -103,7 +103,7 @@
         ],
         correctAnswer: [
         {% for choice in wquestion.sword_set.all %}
-          "{{ choice.id }}",
+          {{ choice.id }},
         {% endfor %}
         ],
         question_id: "{{ wquestion.id }}"
@@ -161,11 +161,11 @@
         // find selected answer
         const answerContainer = answerContainers[questionNumber];
         const selector = `input[name=question${questionNumber}]:checked`;
-        const userAnswer = (answerContainer.querySelector(selector) || {}).value;
+        const userAnswer = $("input:checkbox[name=question"+questionNumber+"]:checked").map(function(){return $(this).val()}).get()
         var is_correct = 0
 
         // if answer is correct
-        if (userAnswer === currentQuestion.correctAnswer) {
+        if (userAnswer.length === currentQuestion.correctAnswer.length && userAnswer.sort().every(function(value, index) { return value === currentQuestion.correctAnswer.sort()[index]})) {
           // add to the number of correct answers
           numCorrect++;
 
