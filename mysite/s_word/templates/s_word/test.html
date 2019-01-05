@@ -94,24 +94,27 @@
   (function() {
     const myQuestions = [
     {% for word in word_list %}
+    {% for wquestion in word.question_set.all|shuffle %}
+      {% if wquestion.test_type == test_type %}
       {
         question: "{{ word.sample|linebreaksbr }} <br><small> {{ word.source|linebreaksbr }} </small>",
         answers: [
-          {% for choice in word.swordtest1choice_set.all|shuffle %}
-            {% if choice.test_type == test_type %}
+          {% for choice in wquestion.swordtest1choice_set.all|shuffle %}
             [{{ choice.id }}, "{{ choice.choice_txt|linebreaksbr }}"],
-            {% endif %}
           {% endfor %}
         ],
-        {% for choice in word.swordtest1choice_set.all %}
-          {% if choice.is_correct and choice.test_type == test_type %}
+        {% for choice in wquestion.swordtest1choice_set.all %}
+          {% if choice.is_correct %}
         correctAnswer: "{{ choice.id }}",
           {% endif %}
         {% endfor %}
         translation: "{{ word.translation|linebreaksbr }}",
         highlight: "{{ word.sword|linebreaksbr }}",
         id: "{{ word.id }}"
+        question_id: "{{ wquestion.id }}"
       },
+      {% endif %}
+    {% endfor %}
     {% endfor %}
     ];
 
@@ -150,6 +153,7 @@
                 <input type='hidden' name="test_type" value="{{ test_type }}" />
                 <input type='hidden' name="test_answer" value="" />
                 <input type='hidden' name="test_result" value="" />
+                <input type='hidden' name="question_id_id" value=${currentQuestion.question_id} />
             </form>
           </div>`
         );

@@ -17,6 +17,15 @@ from tmp_sword a, t_sword b
 where a.sword=b.sword;
 
 -- 插入数据到例句表
+insert into s_word_sword(sword, pinyin, word_class, meaning, sample, source, translation, swordmeaning_id)
+select a.sword, a.pinyin, a.word_class, a.meaning, a.sample, a.source, a.translation, b.id
+from tmp_sword a, t_swordmeaning b, t_sword c
+where a.sword = c.sword
+and   c.id = b.word_id
+and   a.pinyin = b.pinyin
+and   a.word_class = b.word_class
+and   a.meaning = b.meaning
+and   a.sample <> "";
 
 
 -- 生成例句对应的题目
@@ -24,34 +33,72 @@ CREATE TABLE "t_question" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
                            "sword_id" integer NOT NULL REFERENCES "s_word_sword" ("id"),
                            "test_type" varchar(10) NOT NULL);
 create unique index t_question_pk on t_question('sword_id','test_type');
-insert into t_question(sword_id,test_type) select distinct sword_id, test_type from s_word_swordtest1choice;
+
+-- 每个例句都有含义题
+insert into t_question(sword_id,test_type) 
+select distinct id, '含义' from s_word_sword;
+
+-- 只有有拼音的才有拼音题
+insert into t_question(sword_id,test_type) 
+select distinct a.id, '拼音' 
+from s_word_sword a,
+     t_swordmeaning b
+where a.swordmeaning_id=b.id
+and   b.pinyin<>"";
+
+-- 只有词性多于1个的才有词性题
+insert into t_question(sword_id,test_type) 
+select c.id, '词性'
+from
+    (select word_id,count(distinct word_class) from t_swordmeaning group by word_id having count(distinct word_class)>1) a,
+    t_swordmeaning b,
+    s_word_sword c
+where a.word_id=b.word_id
+and  b.id=c.swordmeaning_id;
 
 
--- generate pinyin test
-insert into s_word_swordtest1choice(sword_id, test_type, choice_txt, is_correct) 
-    select a.id,'拼音', b.pinyin, a.pinyin=b.pinyin 
-    from s_word_sword a, 
-        (select distinct sword, pinyin from s_word_sword where pinyin<>"" ) b,
-        (select sword from s_word_sword where pinyin<>"" group by sword having count(distinct pinyin)>1) c
-    where a.sword=b.sword
-    and b.sword=c.sword
-    and a.sample<>"";
--- generate word_class test
-insert into s_word_swordtest1choice(sword_id, test_type, choice_txt, is_correct) 
-    select a.id,'词性', b.word_class, a.word_class=b.word_class 
-    from s_word_sword a, 
-        (select distinct sword, word_class from s_word_sword) b,
-        (select sword from s_word_sword group by sword having count(distinct word_class)>1) c
-    where a.sword=b.sword
-    and b.sword=c.sword
-    and a.sample<>"";
--- generate meaning test
-insert into s_word_swordtest1choice(sword_id, test_type, choice_txt, is_correct) 
-    select a.id,'含义', b.meaning||'【'||b.word_class||'】', b.meaning||'【'||b.word_class||'】'=a.meaning||'【'||a.word_class||'】'
-    from s_word_sword a, 
-        (select distinct sword, meaning, word_class from s_word_sword ) b 
-    where a.sword=b.sword
-    and a.sample<>"";
+-- 生成题目选项：含义
+insert into s_word_swordtest1choice(sword_id, test_type, choice_txt, is_correct, question_id_id) 
+select distinct a.sword_id, a.test_type, 
+       d.meaning||'【'||d.word_class||'】', 
+       (case when d.meaning=c.meaning and d.word_class=c.word_class then 1 else 0 end) is_correct,
+       a.id
+from t_question a,
+     s_word_sword b,
+     t_swordmeaning c,
+     t_swordmeaning d
+where a.sword_id=b.id
+and   b.swordmeaning_id =c.id
+and   c.word_id=d.word_id
+and   a.test_type='含义';
+
+-- 生成题目选项：拼音
+insert into s_word_swordtest1choice(sword_id, test_type, choice_txt, is_correct, question_id_id) 
+select distinct a.sword_id, a.test_type, d.pinyin, 
+       (case when d.pinyin=c.pinyin then 1 else 0 end) is_correct,
+       a.id
+from t_question a,
+     s_word_sword b,
+     t_swordmeaning c,
+     t_swordmeaning d
+where a.sword_id=b.id
+and   b.swordmeaning_id =c.id
+and   c.word_id=d.word_id
+and   a.test_type='拼音';
+
+-- 生成题目选项：词性
+insert into s_word_swordtest1choice(sword_id, test_type, choice_txt, is_correct, question_id_id) 
+select distinct a.sword_id, a.test_type, d.word_class, 
+       (case when d.word_class=c.word_class then 1 else 0 end) is_correct,
+       a.id
+from t_question a,
+     s_word_sword b,
+     t_swordmeaning c,
+     t_swordmeaning d
+where a.sword_id=b.id
+and   b.swordmeaning_id =c.id
+and   c.word_id=d.word_id
+and   a.test_type='词性';
 
 
 -- create view 
