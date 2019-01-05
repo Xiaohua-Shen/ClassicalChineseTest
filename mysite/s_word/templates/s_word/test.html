@@ -228,7 +228,7 @@
         $('#testresultform'+questionNumber).submit();
 
         // show current slide's answer is correct or not
-        if is_correct == 1 {
+        if (is_correct === 1) {
           resultsContainer.innerHTML = `<font color=green>回答正确</font>`;
         } else {
           resultsContainer.innerHTML = `<font color=red>回答错误</font>`;
