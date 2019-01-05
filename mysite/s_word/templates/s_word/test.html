@@ -84,8 +84,8 @@
   <div id="quiz"></div>
 </div>
 <button id="previous">上一题</button>
+<button id="submit">检查答案</button>
 <button id="next">下一题</button>
-<button id="submit">提交答案</button>
 <a href="/s_word/word/?sword={{ sword }}">返回</a>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -173,7 +173,9 @@
       let numCorrect = 0;
 
       // for each question...
-      myQuestions.forEach((currentQuestion, questionNumber) => {
+      questionNumber = currentSlide;
+      currentQuestion = myQuestions[questionNumber];
+      
         // find selected answer
         const answerContainer = answerContainers[questionNumber];
         const selector = `input[name=question${questionNumber}]:checked`;
@@ -225,10 +227,13 @@
         
         $('#testresultform'+questionNumber).submit();
 
-      });
-
-      // show number of correct answers out of total
-      resultsContainer.innerHTML = `共 ${myQuestions.length} 题，答对 ${numCorrect} 题`;
+        // show current slide's answer is correct or not
+        if is_correct == 1 {
+          resultsContainer.innerHTML = `<font color=green>回答正确</font>`;
+        } else {
+          resultsContainer.innerHTML = `<font color=red>回答错误</font>`;
+        };
+      
     }
 
     function showSlide(n) {
@@ -244,10 +249,8 @@
 
       if (currentSlide === slides.length - 1) {
         nextButton.style.display = "none";
-        submitButton.style.display = "inline-block";
       } else {
         nextButton.style.display = "inline-block";
-        submitButton.style.display = "none";
       }
     }
 
