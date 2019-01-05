@@ -87,6 +87,11 @@
 <button id="next">下一题</button>
 <button id="submit">提交答案</button>
 <a href="/s_word/word/?sword={{ sword }}">返回</a>
+<form id="choiceresultform" action="" method="post">
+  {% csrf_token %}
+  <input type='hidden' name="test_result" value="" />
+  <input type='hidden' name="test_type" value="反选" />
+</form>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript">
@@ -95,7 +100,7 @@
     const myQuestions = [
     {% for wquestion in question_list|shuffle %}
       {
-        question: "<b>{{ sword }}</b>有<b>{{ wquestion.meaning|linebreaksbr }}【{{ wquestion.word_class|linebreaksbr }}】</b>的意思，以下那几句中的{{ sword }}是这个意思？",
+        question: "<b>{{ sword }}</b>有<b>{{ wquestion.meaning|linebreaksbr }}【{{ wquestion.word_class|linebreaksbr }}】</b>的意思，以下哪几句中的{{ sword }}是这个意思？",
         answers: [
           {% for choice in choice_list|shuffle %}
             [{{ choice.id }}, "{{ choice.sample|linebreaksbr }}<small>{{ choice.source|linebreaksbr }}</small>"],
@@ -139,7 +144,7 @@
             <div class="answers"> ${answers.join("")} </div>
             <form id="testresultform${questionNumber}" action="/s_word/${currentQuestion.question_id}/reviewresult/" method="post">
                 {% csrf_token %}
-                <input type='hidden' name="test_result" value="" />
+                <input type='hidden' name="test_meaning_result" value="" />
             </form>
           </div>`
         );
@@ -147,6 +152,33 @@
 
       // finally combine our output list into one string of HTML and put it on the page
       quizContainer.innerHTML = output.join("");
+    }
+
+    // 记录每个选项是否正确选择
+    function sendResult(choiceID, testResult) {
+
+      $('#choiceresultform').submit(function(e) {
+
+      e.preventDefault(); // avoid to execute the actual submit of the form.
+
+      $('input[name="test_result"]').val(testResult);
+      var form = $(this);
+
+      $.ajax({
+            method: "POST",
+            url: `/s_word/${choiceID}/result/`,
+            data: form.serialize(), // serializes the form's elements.
+            }).done(function(data)
+            {
+              console.log('Submission was successful.');
+              console.log(data);
+            }).fail(function (data) {
+              console.log('An error occurred.');
+              console.log(data);
+            });
+      });
+
+      $('#choiceresultform').submit();
     }
 
     function showResults() {
@@ -180,9 +212,9 @@
         }
 
         // set test result form data
-        document.getElementsByName('test_result')[questionNumber].value = is_correct
+        document.getElementsByName('test_meaning_result')[questionNumber].value = is_correct
 
-        // submit test result to server
+        // submit test result to server (关于含义)
         $('#testresultform'+questionNumber).submit(function(e) {
 
           e.preventDefault(); // avoid to execute the actual submit of the form.
@@ -205,6 +237,21 @@
         });
         
         $('#testresultform'+questionNumber).submit();
+
+        // submit test result to server (关于例句, 改选的没选和选错的都要标记)
+        for ( answer in userAnswer){
+          if (answer in currentQuestion.correctAnswer) {
+            sendResult( answer, 1);
+          } else {
+            sendResult( answer, 0);
+          }
+        }
+
+        for ( answer in currentQuestion.correctAnswer) {
+          if (!(answer in userAnswer)) {
+            sendResult( answer, 0)
+          }
+        }
 
       });
 

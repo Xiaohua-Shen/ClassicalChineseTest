@@ -188,7 +188,7 @@ def reviewresult(request, word_id):
     SWordReviewTest.objects.create(user_id=request.user.id,
                                       swordmeaning_id=word_id,
                                       test_date=timezone.now(),
-                                      test_result=request.POST.get("test_result", "")
+                                      test_result=request.POST.get("test_meaning_result", "")
                                       )
     # return page 
     return HttpResponse("test result is recorded")
