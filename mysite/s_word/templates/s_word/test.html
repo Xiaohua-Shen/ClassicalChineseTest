@@ -117,6 +117,30 @@
     {% endfor %}
     ];
 
+    // 初始化submit测试结果的form
+    myQuestions.forEach((currentQuestion, questionNumber) => {
+      $('#testresultform'+questionNumber).submit(function(e) {
+
+      e.preventDefault(); // avoid to execute the actual submit of the form.
+
+      var form = $(this);
+      var url = form.attr('action');
+
+      $.ajax({
+            method: "POST",
+            url: url,
+            data: form.serialize(), // serializes the form's elements.
+            }).done(function(data)
+            {
+              console.log('Submission was successful.');
+              console.log(data);
+            }).fail(function (data) {
+              console.log('An error occurred.');
+              console.log(data);
+            });
+      });
+    });
+
     function buildQuiz() {
       // we'll need a place to store the HTML output
       const output = [];
@@ -206,27 +230,6 @@
         document.getElementsByName('test_result')[questionNumber].value = is_correct
 
         // submit test result to server
-        $('#testresultform'+questionNumber).submit(function(e) {
-
-          e.preventDefault(); // avoid to execute the actual submit of the form.
-
-          var form = $(this);
-          var url = form.attr('action');
-
-          $.ajax({
-                method: "POST",
-                url: url,
-                data: form.serialize(), // serializes the form's elements.
-                }).done(function(data)
-                {
-                  console.log('Submission was successful.');
-                  console.log(data);
-                }).fail(function (data) {
-                  console.log('An error occurred.');
-                  console.log(data);
-                });
-        });
-        
         $('#testresultform'+questionNumber).submit();
 
         // show current slide's answer is correct or not
