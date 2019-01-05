@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.shortcuts import get_object_or_404, render
-from .models import SWord,SWordTest,SWordTest1Choice,SWordUserQuestionByWord,SWordQuestionByWord,SWordTestScore,Question,SWordPassedQuestion
+from .models import SWord,SWordTest,SWordTest1Choice,SWordUserQuestionByWord,SWordQuestionByWord,SWordTestScore,Question,SWordPassedQuestion,Word,SWordMeaning,SWordReviewTest
 from django.http import HttpResponse
 from django.template import loader
 from django.utils import timezone
@@ -112,6 +112,26 @@ def test(request):
     # return page
     return HttpResponse(template.render(context, request))
 
+def reviewtest(request):
+    if not request.user.is_authenticated:
+        return redirect('/admin/login?next=%s' % (request.path))
+    
+    sword = request.GET.get('sword', '')
+    word_id = Word.objects.filter(sword=sword)[0].id
+    question_list = SWordMeaning.objects.filter(word_id=word_id)
+    choice_list = SWord.objects.filter(sword=sword)
+
+    # prepare return page
+    template = loader.get_template('s_word/reviewtest.html')
+    context = {
+        'sword': sword,
+        'question_list': question_list,
+        'choice_list': choice_list,
+        'user': request.user.username
+    }
+    # return page
+    return HttpResponse(template.render(context, request))
+
 def errortest(request):
     if not request.user.is_authenticated:
         return redirect('/admin/login?next=%s' % (request.path))
@@ -157,6 +177,17 @@ def result(request, word_id):
                                       test_result=request.POST.get("test_result", ""),
                                       test_answer=request.POST.get("test_answer", ""),
                                       question_id_id=request.POST.get("question_id_id", "")
+                                      )
+    # return page 
+    return HttpResponse("test result is recorded")
+
+def result(request, word_id):
+    swordmeaning = get_object_or_404(SWordMeaning, pk=word_id)
+    # record test result to db
+    SWordReviewTest.objects.create(user_id=request.user.id,
+                                      swordmeaning_id=word_id,
+                                      test_date=timezone.now(),
+                                      test_result=request.POST.get("test_result", "")
                                       )
     # return page 
     return HttpResponse("test result is recorded")
