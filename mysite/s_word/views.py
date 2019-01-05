@@ -177,8 +177,7 @@ def result(request, word_id):
                                       test_date=timezone.now(),
                                       test_type=request.POST.get("test_type", ""),
                                       test_result=request.POST.get("test_result", ""),
-                                      test_answer=request.POST.get("test_answer", ""),
-                                      question_id_id=request.POST.get("question_id_id", "")
+                                      test_answer=request.POST.get("test_answer", "")
                                       )
     # return page 
     return HttpResponse("test result is recorded")

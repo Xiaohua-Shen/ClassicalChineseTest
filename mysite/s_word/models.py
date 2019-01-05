@@ -87,7 +87,6 @@ class SWordTest(models.Model):
     test_result = models.IntegerField(default=0)
     test_answer = models.CharField(max_length=100,default="")
     test_type = models.CharField(max_length=10)
-    question_id = models.ForeignKey(Question, on_delete=models.CASCADE)
 
 # 复习测试的结果（根据含义选例句）
 class SWordReviewTest(models.Model):
