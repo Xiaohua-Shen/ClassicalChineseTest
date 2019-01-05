@@ -143,6 +143,7 @@
         var question_txt = currentQuestion.question.replace(re, replace_txt )
         output.push(
           `<div class="slide">
+            <div id="results${questionNumber}"></div>
             第${questionNumber+1}/${myQuestions.length}题
             <div class="question"> ${question_txt} </div>
             <div class="answers"> ${answers.join("")} </div>
@@ -154,7 +155,7 @@
                 <input type='hidden' name="test_result" value="" />
                 <input type='hidden' name="question_id_id" value=${currentQuestion.question_id} />
             </form>
-            <div id="results${questionNumber}"></div>
+            
           </div>`
         );
       });
