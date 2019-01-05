@@ -136,6 +136,7 @@
           <td>例句出处</td>
           <td>译文</td>
           <td>错误次数</td>
+          <td>正确次数</td>
         </tr>
         {% for sword in sword_list %}
         {% if sword.failcount > 0 %}
@@ -150,6 +151,7 @@
           <td>{{ sword.source }}</td>
           <td>{{ sword.translation }}</td>
           <td>{{ sword.failcount }}</td>
+          <td>{{ sword.passcount }}</td>
         </tr>
         {% endfor %}
       </table>
