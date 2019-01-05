@@ -108,7 +108,7 @@
         ],
         correctAnswer: [
         {% for choice in wquestion.sword_set.all %}
-          {{ choice.id }},
+          "{{ choice.id }}",
         {% endfor %}
         ],
         question_id: "{{ wquestion.id }}"
@@ -130,7 +130,7 @@
           // ...add an HTML radio button
           answers.push(
             `<label>
-              <input type="checkbox" name="question${questionNumber}" value=${currentAnswer[0]}>
+              <input type="checkbox" name="question${questionNumber}" value="${currentAnswer[0]}">
                 ${currentAnswer[1]}
             </label>`
           );
