@@ -21,7 +21,7 @@ def index(request):
     current_user = request.user
 
     # get inprogress or passed word list
-    start_word_list = SWordUserQuestionByWord.objects.filter(user_id=current_user.id)
+    inprogress_word_list = SWordUserQuestionByWord.objects.filter(user_id=current_user.id, status="inprogress")
 
     # get not start word list
     notstart_word_list = SWordQuestionByWord.objects.exclude(id__in=start_word_list)
@@ -29,7 +29,7 @@ def index(request):
     # prepare return page
     template = loader.get_template('s_word/index.html')
     context = {
-        'start_word_list': start_word_list,
+        'inprogress_word_list': inprogress_word_list,
         'notstart_word_list': notstart_word_list,
         'user': current_user.username
     }
