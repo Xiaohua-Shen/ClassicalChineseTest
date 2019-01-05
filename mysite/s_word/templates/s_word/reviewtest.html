@@ -95,7 +95,7 @@
     const myQuestions = [
     {% for wquestion in question_list|shuffle %}
       {
-        question: "<b>{{ sword }}</b>有<b>{{ wquestion.meaning|linebreaksbr }}【{{ wquestion.word_class|linebreaksbr }}</b>的意思，以下那几句中的{{ sword }}是这个意思？",
+        question: "<b>{{ sword }}</b>有<b>{{ wquestion.meaning|linebreaksbr }}【{{ wquestion.word_class|linebreaksbr }}】</b>的意思，以下那几句中的{{ sword }}是这个意思？",
         answers: [
           {% for choice in choice_list|shuffle %}
             [{{ choice.id }}, "{{ choice.sample|linebreaksbr }}<small>{{ choice.source|linebreaksbr }}</small>"],
@@ -125,7 +125,7 @@
           // ...add an HTML radio button
           answers.push(
             `<label>
-              <input type="radio" name="question${questionNumber}" value="${currentAnswer[0]}">
+              <input type="checkbox" name="question${questionNumber}" value="${currentAnswer[0]}">
                 ${currentAnswer[1]}
             </label>`
           );
