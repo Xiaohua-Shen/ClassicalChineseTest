@@ -118,7 +118,7 @@
     <h1>实词学习: 已通过</h1>
     <h1>实词学习: 待复习</h1>
     {% for word in round1_list %}
-    <a href="/s_word/reviewtest/?sword={{ word.sword }}" class={{ word.status }}>{{ word.sword }}<br>{{ word.score }}</a>
+    <a href="/s_word/reviewtest/?sword={{ word.sword }}" class={{ word.status }}>{{ word.sword }}<br>{{ word.score|default_if_none:"" }}</a>
     {% endfor %}
     <a href="/s_word/errortest/">错题测试</a>
     <a href="/s_word/randomtest/">随机测试</a>
