@@ -240,7 +240,7 @@
       });
 
       // submit test result to server (关于整个词)
-      document.getElementsByName('score').value = numCorrect * 100.0 / myQuestions.length
+      document.getElementsByName('score').value = eval(`${numCorrect} * 100.0 / ${myQuestions.length}`)
       $('#testresultform').submit();
 
       // show number of correct answers out of total
