@@ -246,17 +246,17 @@
         userAnswer.forEach((answer, answerNumber) => {
           if (currentQuestion.correctAnswer.includes(answer)) {
             sendResult( answer, 1);
-            $("input:checkbox[name=question"+questionNumber+"][value=answer]").css("color","green")
+            $("input:checkbox[name=question"+questionNumber+"][value=answer]").css("color","green");
           } else {
             sendResult( answer, 0);
-            $("input:checkbox[name=question"+questionNumber+"][value=answer]").css("color","red")
+            $("input:checkbox[name=question"+questionNumber+"][value=answer]").css("color","red");
           }
         });
 
         currentQuestion.correctAnswer.forEach((answer, answerNumber) => {
           if (!(userAnswer.includes(answer))) {
-            sendResult( answer, 0)
-            $("input:checkbox[name=question"+questionNumber+"][value=answer]").css("color","red")
+            sendResult( answer, 0);
+            $("input:checkbox[name=question"+questionNumber+"][value=answer]").css("color","red");
           }
         });
 
