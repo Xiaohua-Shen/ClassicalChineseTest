@@ -97,7 +97,7 @@
 </form>
 <form id="testresultform" action="/s_word/{{ question_list.0.word.id }}/reviewresult/" method="post">
   {% csrf_token %}
-  <input type='hidden' name="score" value="" />
+  <input type='hidden' name="score" value=0 />
 </form>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
