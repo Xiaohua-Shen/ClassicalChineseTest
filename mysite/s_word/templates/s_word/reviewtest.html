@@ -272,6 +272,9 @@
         resultsContainer.style.color = "red";
         alert("很抱歉，你没有通过该词的测试，请明天再试！你也可以返回进行下一个词的复习！");
       }
+
+      // disable submit button to aovide 2nd summit
+      submitButton.disabled = true
     }
 
     function showSlide(n) {
