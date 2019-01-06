@@ -189,7 +189,7 @@ def reviewresult(request, word_id):
                                       word_id=word_id,
                                       review_round = 1, 
                                       test_date=timezone.now(),
-                                      score=request.POST.get("score", "")
+                                      score=float(request.POST.get("score", "0"))
                                       )
     # return page 
     return HttpResponse("test result is recorded")
