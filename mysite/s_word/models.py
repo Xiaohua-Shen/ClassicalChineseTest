@@ -96,6 +96,19 @@ class SWordReviewRound(models.Model):
     test_date = models.DateTimeField('test accessed')
     score = models.IntegerField(default=0)
 
+# v_user_review_round_1_summary
+class SWordReviewRound1View(models.Model):
+    sword = models.CharField(max_length=100)
+    user_id = models.IntegerField(default=0)
+    score = models.IntegerField(default=0)
+    test_date = models.DateTimeField('test accessed')
+    status = models.CharField(max_length=100)
+    till_now = models.FloatField(default=0)
+
+    class Meta:
+        managed = False
+        db_table = "v_user_review_round_1_summary"
+
 # 错题排序
 class SWordTestScore(models.Model):
     sword_id = models.IntegerField(default=0)

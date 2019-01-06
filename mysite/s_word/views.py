@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.shortcuts import get_object_or_404, render
-from .models import SWord,SWordTest,SWordTest1Choice,SWordUserQuestionByWord,SWordQuestionByWord,SWordTestScore,Question,SWordPassedQuestion,Word,SWordMeaning,SWordReviewRound
+from .models import SWord,SWordTest,SWordTest1Choice,SWordUserQuestionByWord,SWordQuestionByWord,SWordTestScore,Question,SWordPassedQuestion,Word,SWordMeaning,SWordReviewRound,SWordReviewRound1View
 from django.http import HttpResponse
 from django.template import loader
 from django.utils import timezone
@@ -27,12 +27,16 @@ def index(request):
     # get not start word list
     notstart_word_list = SWordQuestionByWord.objects.exclude(id__in=start_word_list)
 
+    # get round 1 review word list
+    round1_list = SWordReviewRound1View.objects.filter(user_id=current_user.id)
+
     # prepare return page
     template = loader.get_template('s_word/index.html')
     context = {
         'inprogress_word_list': inprogress_word_list,
         'notstart_word_list': notstart_word_list,
-        'user': current_user.username
+        'round1_list':round1_list,
+        'user': current_user.username,
     }
     # return page
     return HttpResponse(template.render(context, request))

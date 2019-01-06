@@ -102,21 +102,18 @@ and   a.test_type='词性';
 
 
 -- create view 
--- view of question list
-create view v_swordtestquestion as
-select b.*, a.sword,a.sample from s_word_sword a, (select distinct sword_id, test_type from s_word_swordtest1choice) b where a.id=b.sword_id;
-
--- view of how many questions relate to one word
+-- view of how many questions relate to one word (每个词前3种预习题的数量)
 create view v_swordtestquestion_count as 
-select t2.id, t1.sword, count(*) questioncount 
-from v_swordtestquestion t1, t_sword t2 
-where t1.sword=t2.sword
-group by t1.sword
-order by t2.id;
-
--- view of how many questions relate to one word by test_type
-create view v_swordtestquestion_count_bytype as 
-select sword, test_type, count(*) questioncount from v_swordtestquestion group by sword, test_type;
+select d.id, d.sword, count(*) questioncount
+from t_question a,
+     s_word_sword b,
+     t_swordmeaning c,
+     t_sword d
+where a.sword_id = b.id
+and   b.swordmeaning_id = c.id
+and   c.word_id = d.id
+group by d.id, d.sword
+order by d.id;
 
 -- view for user passed question list 
 create view v_user_passed_question as
@@ -130,7 +127,7 @@ and a.sword_id=c.sword_id
 and a.test_type=c.test_type
 group by a.sword_id, sword, a.test_type, user_id;
 
--- view user's how many passed question by word
+-- view user's how many passed question by word (每个用户每个词前3种预习题的通过数量)
 create view v_user_passed_question_count as
 select c.id, a.sword, a.user_id,count(*) passedcount, b.questioncount, 
        (case when count(*) = b.questioncount then "passed" else "inprogress" end) status
@@ -142,15 +139,6 @@ and b.sword=c.sword
 group by a.sword, a.user_id
 order by c.id ;
 
--- view user's how many passed question by word
-create view v_user_passed_question_count_bytype as
-select a.sword, a.user_id, a.test_type, count(*) passedcount, b.questioncount, 
-       (case when count(*) = b.questioncount then "passed" else "inprogress" end) status
-from v_user_passed_question a,
-     v_swordtestquestion_count_bytype b
-where a.sword=b.sword
-and a.test_type=b.test_type
-group by a.sword, a.user_id, a.test_type;
 
 -- 最后一次答题情况视图
 create view v_user_latest_testresult_by_question as
@@ -181,4 +169,20 @@ and  a.sword_id=c.sword_id
 and  a.test_type=c.test_type
 order by score;
 
--- 用户每个实词的测试通过情况（没有记录以及有记录但没有100分的记录的且当天没有测试记录）
+-- 用户每个实词的第一轮复习测试通过情况
+create view v_user_review_round_1 as
+select a.id, a.sword, a.user_id, max(b.score) score, max(b.test_date) test_date
+from v_user_passed_question_count a
+left outer join
+     (select * from s_word_swordreviewround where review_round=1) b
+on a.id = b.word_id
+and   a.user_id = b.user_id
+where   a.status = 'passed'
+group by a.id, a.sword, a.user_id;
+
+-- （没有记录以及有记录但没有100分的记录的且当天没有测试记录）
+create view  v_user_review_round_1_summary as 
+select a.*, (julianday('now') - julianday(test_date)) till_now,
+       (case when a.score is null then "notstart" else "inprogress" end) status
+from v_user_review_round_1 a
+where (a.score is null) or ( a.score < 100);
