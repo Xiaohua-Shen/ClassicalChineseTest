@@ -89,7 +89,7 @@
 <button id="previous">上一题</button>
 <button id="next">下一题</button>
 <button id="submit">提交答案</button>
-<a href="/s_word/word/?sword={{ sword }}">返回</a>
+<a href="/s_word/">返回</a>
 <form id="choiceresultform" action="" method="post">
   {% csrf_token %}
   <input type='hidden' name="test_result" value="" />
@@ -240,7 +240,8 @@
       });
 
       // submit test result to server (关于整个词)
-      document.getElementsByName('score').value = eval(`${numCorrect} * 100.0 / ${myQuestions.length}`)
+      var score = eval(`${numCorrect} * 100.0 / ${myQuestions.length}`)
+      $('input[name="score"]').val(score);
       $('#testresultform').submit();
 
       // show number of correct answers out of total
@@ -312,7 +313,7 @@
 </script>
 {% else %}
     <p>该实词目前没有学习内容.</p>
-    <a href="/s_word/word/?sword={{ sword }}">返回</a>
+    <a href="/s_word/">返回</a>
 {% endif %}
 </body>
 
