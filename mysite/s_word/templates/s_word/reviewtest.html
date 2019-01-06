@@ -180,7 +180,7 @@
         currentQuestion.answers.forEach((currentAnswer, answerNumber) => {
           // ...add an HTML radio button
           answers.push(
-            `<label>
+            `<label id="question${questionNumber}_${currentAnswer[0]}">
               <input type="checkbox" name="question${questionNumber}" value="${currentAnswer[0]}">
                 ${currentAnswer[1]}
             </label>`
@@ -226,16 +226,16 @@
         // find selected answer
         const answerContainer = answerContainers[questionNumber];
         const selector = `input[name=question${questionNumber}]:checked`;
-        const userAnswer = $("input:checkbox[name=question"+questionNumber+"]:checked").map(function(){return $(this).val()}).get()
-        var is_correct = 0
+        const userAnswer = $("input:checkbox[name=question"+questionNumber+"]:checked").map(function(){return $(this).val()}).get();
+        var is_correct = 0;
 
         // reset answer color
-        answerContainers[questionNumber].style.color = "black"
+        answerContainers[questionNumber].style.color = "black";
         // if answer is correct
         if (userAnswer.length === currentQuestion.correctAnswer.length && userAnswer.sort().every(function(value, index) { return value === currentQuestion.correctAnswer.sort()[index]})) {
           // add to the number of correct answers
           numCorrect++;
-          is_correct = 1
+          is_correct = 1;
         } 
 
         // submit test result to server (关于含义)
@@ -246,17 +246,17 @@
         userAnswer.forEach((answer, answerNumber) => {
           if (currentQuestion.correctAnswer.includes(answer)) {
             sendResult( answer, 1);
-            $("input:checkbox[name=question"+questionNumber+"][value='"+answer+"']").css("color","green");
+            $("#question"+questionNumber+"_"+answer).css("color","green");
           } else {
             sendResult( answer, 0);
-            $("input:checkbox[name=question"+questionNumber+"][value='"+answer+"']").css("color","red");
+            $("#question"+questionNumber+"_"+answer).css("color","red");
           }
         });
 
         currentQuestion.correctAnswer.forEach((answer, answerNumber) => {
           if (!(userAnswer.includes(answer))) {
             sendResult( answer, 0);
-            $("input:checkbox[name=question"+questionNumber+"][value='"+answer+"']").css("color","red");
+            $("#question"+questionNumber+"_"+answer).css("color","red");
           }
         });
 
