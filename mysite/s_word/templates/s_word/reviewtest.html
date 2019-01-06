@@ -95,6 +95,10 @@
   <input type='hidden' name="test_result" value="" />
   <input type='hidden' name="test_type" value="反选" />
 </form>
+<form id="testresultform" action="/s_word/{{ question_list.0.word.id }}/reviewresult/" method="post">
+  {% csrf_token %}
+  <input type='hidden' name="score" value="" />
+</form>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript">
@@ -120,31 +124,9 @@
     ];
 
     //
-    function initSubmitResultForm() {
-      myQuestions.forEach((currentQuestion, questionNumber) => {
-        $('#testresultform'+questionNumber).submit(function(e) {
+    function initSubmitResultForm(formid) {
 
-        e.preventDefault(); // avoid to execute the actual submit of the form.
-
-        var form = $(this);
-        var url = form.attr('action');
-
-        $.ajax({
-              method: "POST",
-              url: url,
-              data: form.serialize(), // serializes the form's elements.
-              }).done(function(data)
-              {
-                console.log('Submission was successful.');
-                console.log(data);
-              }).fail(function (data) {
-                console.log('An error occurred.');
-                console.log(data);
-              });
-        });
-      });
-
-      $('#choiceresultform').submit(function(e) {
+      $('#'+formid).submit(function(e) {
 
       e.preventDefault(); // avoid to execute the actual submit of the form.
 
@@ -196,10 +178,6 @@
             第${questionNumber+1}/${myQuestions.length}题
             <div class="question"> ${currentQuestion.question} </div>
             <div class="answers"> ${answers.join("")} </div>
-            <form id="testresultform${questionNumber}" action="/s_word/${currentQuestion.question_id}/reviewresult/" method="post">
-                {% csrf_token %}
-                <input type='hidden' name="test_meaning_result" value="" />
-            </form>
           </div>`
         );
       });
@@ -241,10 +219,6 @@
           is_correct = 1;
         } 
 
-        // submit test result to server (关于含义)
-        document.getElementsByName('test_meaning_result')[questionNumber].value = is_correct
-        $('#testresultform'+questionNumber).submit();
-
         // submit test result to server (关于例句, 改选的没选和选错的都要标记)
         userAnswer.forEach((answer, answerNumber) => {
           if (currentQuestion.correctAnswer.includes(answer)) {
@@ -264,6 +238,10 @@
         });
 
       });
+
+      // submit test result to server (关于整个词)
+      document.getElementsByName('score').value = numCorrect * 100.0 / myQuestions.length
+      $('#testresultform').submit();
 
       // show number of correct answers out of total
       resultsContainer.innerHTML = `共 ${myQuestions.length} 题，答对 ${numCorrect} 题`;
@@ -314,7 +292,8 @@
 
     // display quiz right away
     buildQuiz();
-    initSubmitResultForm();
+    initSubmitResultForm("choiceresultform");
+    initSubmitResultForm("testresultform");
 
     const previousButton = document.getElementById("previous");
     const nextButton = document.getElementById("next");

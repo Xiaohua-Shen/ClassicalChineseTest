@@ -88,12 +88,13 @@ class SWordTest(models.Model):
     test_answer = models.CharField(max_length=100,default="")
     test_type = models.CharField(max_length=10)
 
-# 复习测试的结果（根据含义选例句）
-class SWordReviewTest(models.Model):
+# 用户每个实词的测试通过情况（根据含义选例句）
+class SWordReviewRound(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    word = models.ForeignKey(Word, on_delete=models.CASCADE)
+    review_round = models.IntegerField(default=0)
     test_date = models.DateTimeField('test accessed')
-    test_result = models.IntegerField(default=0)
-    swordmeaning = models.ForeignKey(SWordMeaning, on_delete=models.CASCADE)
+    score = models.IntegerField(default=0)
 
 # 错题排序
 class SWordTestScore(models.Model):

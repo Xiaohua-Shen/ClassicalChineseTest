@@ -180,3 +180,5 @@ and   a.test_type=b.test_type
 and  a.sword_id=c.sword_id
 and  a.test_type=c.test_type
 order by score;
+
+-- 用户每个实词的测试通过情况（没有记录以及有记录但没有100分的记录的且当天没有测试记录）

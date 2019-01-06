@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.shortcuts import get_object_or_404, render
-from .models import SWord,SWordTest,SWordTest1Choice,SWordUserQuestionByWord,SWordQuestionByWord,SWordTestScore,Question,SWordPassedQuestion,Word,SWordMeaning,SWordReviewTest
+from .models import SWord,SWordTest,SWordTest1Choice,SWordUserQuestionByWord,SWordQuestionByWord,SWordTestScore,Question,SWordPassedQuestion,Word,SWordMeaning,SWordReviewRound
 from django.http import HttpResponse
 from django.template import loader
 from django.utils import timezone
@@ -183,12 +183,13 @@ def result(request, word_id):
     return HttpResponse("test result is recorded")
 
 def reviewresult(request, word_id):
-    swordmeaning = get_object_or_404(SWordMeaning, pk=word_id)
+    word = get_object_or_404(Word, pk=word_id)
     # record test result to db
-    SWordReviewTest.objects.create(user_id=request.user.id,
-                                      swordmeaning_id=word_id,
+    SWordReviewRound.objects.create(user_id=request.user.id,
+                                      word_id=word_id,
+                                      review_round = 1, 
                                       test_date=timezone.now(),
-                                      test_result=request.POST.get("test_meaning_result", "")
+                                      score=request.POST.get("score", "")
                                       )
     # return page 
     return HttpResponse("test result is recorded")
