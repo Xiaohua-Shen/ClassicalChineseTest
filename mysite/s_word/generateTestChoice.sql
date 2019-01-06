@@ -186,3 +186,20 @@ select a.*, (julianday('now') - julianday(test_date)) till_now,
        (case when a.score is null then "notstart" else "inprogress" end) status
 from v_user_review_round_1 a
 where (a.score is null) or ( a.score < 100);
+
+-- 
+create view v_user_review_round_2 as
+select a.id, a.sword, a.user_id, max(b.score) score, max(b.test_date) test_date
+from v_user_review_round_1 a
+left outer join 
+     (select * from s_word_swordreviewround where review_round=2) b
+on a.id = b.word_id
+and a.user_id=b.user_id
+where a.score=100
+group by a.id, a.sword, a.user_id;
+
+create view  v_user_review_round_2_summary as 
+select a.*, (julianday('now') - julianday(test_date)) till_now,
+       (case when a.score is null then "notstart" else "inprogress" end) status
+from v_user_review_round_2 a
+where (a.score is null) or ( a.score < 100);

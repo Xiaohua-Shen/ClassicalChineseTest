@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.shortcuts import get_object_or_404, render
-from .models import SWord,SWordTest,SWordTest1Choice,SWordUserQuestionByWord,SWordQuestionByWord,SWordTestScore,Question,SWordPassedQuestion,Word,SWordMeaning,SWordReviewRound,SWordReviewRound1View
+from .models import SWord,SWordTest,SWordTest1Choice,SWordUserQuestionByWord,SWordQuestionByWord,SWordTestScore,Question,SWordPassedQuestion,Word,SWordMeaning,SWordReviewRound,SWordReviewRound1View,SWordReviewRound2View
 from django.http import HttpResponse
 from django.template import loader
 from django.utils import timezone
@@ -30,12 +30,16 @@ def index(request):
     # get round 1 review word list
     round1_list = SWordReviewRound1View.objects.filter(user_id=current_user.id)
 
+    # get round 2 review word list
+    round2_list = SWordReviewRound2View.objects.filter(user_id=current_user.id)
+
     # prepare return page
     template = loader.get_template('s_word/index.html')
     context = {
         'inprogress_word_list': inprogress_word_list,
         'notstart_word_list': notstart_word_list,
         'round1_list':round1_list,
+        'round2_list':round2_list,
         'user': current_user.username,
     }
     # return page
