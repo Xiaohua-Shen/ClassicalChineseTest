@@ -200,7 +200,6 @@
       // for each question...
       myChoices.forEach((currentChoice, choiceNumber) => {
         // find selected answer
-        const userAnswer = $("input:checkbox[name=question"+questionNumber+"]:checked").map(function(){return $(this).val()}).get();
         var is_correct = 0;
 
         const choice = $("#"+currentChoice[0]).val()
