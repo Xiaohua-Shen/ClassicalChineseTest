@@ -215,7 +215,7 @@ def reviewresult(request, word_id):
     # record test result to db
     SWordReviewRound.objects.create(user_id=request.user.id,
                                       word_id=word_id,
-                                      review_round = 1, 
+                                      review_round = request.POST.get("round", 0), 
                                       test_date=timezone.now(),
                                       score=request.POST.get("score", 0)
                                       )

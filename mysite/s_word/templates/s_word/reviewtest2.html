@@ -85,9 +85,10 @@
   <input type='hidden' name="test_result" value="" />
   <input type='hidden' name="test_type" value="反选" />
 </form>
-<form id="testresultform" action="/s_word/{{ question_list.0.word.id }}/reviewresult2/" method="post">
+<form id="testresultform" action="/s_word/{{ question_list.0.word.id }}/reviewresult/" method="post">
   {% csrf_token %}
   <input type='hidden' name="score" value=0 />
+  <input type='hidden' name="round" value=2 />
 </form>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -192,58 +193,45 @@
     }
 
     function showResults() {
-      // gather answer containers from our quiz
-      const answerContainers = quizContainer.querySelectorAll(".answers");
 
       // keep track of user's answers
       let numCorrect = 0;
 
       // for each question...
-      myQuestions.forEach((currentQuestion, questionNumber) => {
+      myChoices.forEach((currentChoice, choiceNumber) => {
         // find selected answer
-        const answerContainer = answerContainers[questionNumber];
-        const selector = `input[name=question${questionNumber}]:checked`;
         const userAnswer = $("input:checkbox[name=question"+questionNumber+"]:checked").map(function(){return $(this).val()}).get();
         var is_correct = 0;
 
-        // reset answer color
-        answerContainers[questionNumber].style.color = "black";
+        const choice = $("#"+currentChoice[0]).val()
+        const userAnswer = $("#"+currentChoice[0]).parent.attr('id')
+
         // if answer is correct
-        if (userAnswer.length === currentQuestion.correctAnswer.length && userAnswer.sort().every(function(value, index) { return value === currentQuestion.correctAnswer.sort()[index]})) {
+        if ( userAnswer == 'meaning'+choice) {
           // add to the number of correct answers
           numCorrect++;
           is_correct = 1;
         } 
 
-        // submit test result to server (关于例句, 改选的没选和选错的都要标记)
-        userAnswer.forEach((answer, answerNumber) => {
-          if (currentQuestion.correctAnswer.includes(answer)) {
-            sendResult( answer, 1);
-            $("#question"+questionNumber+"_"+answer).css("color","green");
-          } else {
-            sendResult( answer, 0);
-            $("#question"+questionNumber+"_"+answer).css("color","red");
-          }
-        });
-
-        currentQuestion.correctAnswer.forEach((answer, answerNumber) => {
-          if (!(userAnswer.includes(answer))) {
-            sendResult( answer, 0);
-            $("#question"+questionNumber+"_"+answer).css("color","red");
-          }
-        });
+        // submit test result to server 
+        sendResult(currentChoice[0], is_correct);
+        if ( is_correct == 1){
+          $("#"+currentChoice[0]).css("color","green");
+        } else {
+          $("#"+currentChoice[0]).css("color","red");
+        };
 
       });
 
       // submit test result to server (关于整个词)
-      var score = eval(`${numCorrect} * 100.0 / ${myQuestions.length}`)
+      var score = eval(`${numCorrect} * 100.0 / ${myChoices.length}`)
       $('input[name="score"]').val(score);
       $('#testresultform').submit();
 
       // show number of correct answers out of total
-      resultsContainer.innerHTML = `共 ${myQuestions.length} 题，答对 ${numCorrect} 题`;
+      resultsContainer.innerHTML = `共 ${myChoices.length} 题，答对 ${numCorrect} 题`;
 
-      if (myQuestions.length === numCorrect) {
+      if (myChoices.length === numCorrect) {
         resultsContainer.style.color = "green";
         alert("恭喜你通过测试，你可以返回进行下一个词的复习！");
       } else {
