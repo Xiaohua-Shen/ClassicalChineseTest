@@ -9,6 +9,7 @@ urlpatterns = [
     url(r'^errortest/$', views.errortest, name='errortest'),
     url(r'^randomtest/$', views.randomtest, name='randomtest'),
     url(r'^reviewtest/$', views.reviewtest, name='reviewtest'),
+    url(r'^reviewtest2/$', views.reviewtest2, name='reviewtest2'),
     url(r'^(?P<word_id>[0-9]+)/result/$', views.result, name='result'),
     url(r'^(?P<word_id>[0-9]+)/reviewresult/$', views.reviewresult, name='reviewresult'),
 ]

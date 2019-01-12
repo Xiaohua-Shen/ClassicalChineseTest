@@ -142,6 +142,26 @@ def reviewtest(request):
     # return page
     return HttpResponse(template.render(context, request))
 
+def reviewtest2(request):
+    if not request.user.is_authenticated:
+        return redirect('/admin/login?next=%s' % (request.path))
+    
+    sword = request.GET.get('sword', '')
+    word_id = Word.objects.filter(sword=sword)[0].id
+    meaning_list = SWordMeaning.objects.filter(word_id=word_id)
+    choice_list = SWord.objects.filter(sword=sword)
+
+    # prepare return page
+    template = loader.get_template('s_word/reviewtest2.html')
+    context = {
+        'sword': sword,
+        'meaning_list': meaning_list,
+        'choice_list': choice_list,
+        'user': request.user.username
+    }
+    # return page
+    return HttpResponse(template.render(context, request))
+
 def errortest(request):
     if not request.user.is_authenticated:
         return redirect('/admin/login?next=%s' % (request.path))

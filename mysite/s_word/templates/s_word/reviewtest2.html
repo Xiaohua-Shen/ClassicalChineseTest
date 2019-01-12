@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en" >
+
+<head>
+  <meta charset="UTF-8">
+  <title>Sword Review</title>
+  <style type="text/css">
+
+    @import url(https://fonts.googleapis.com/css?family=Work+Sans:300,600);
+
+    body{
+      font-size: 20px;
+      font-family: 'Work Sans', sans-serif;
+      color: #333;
+      font-weight: 300;
+      text-align: center;
+      background-color: #f8f6f0;
+    }
+    h1{
+      font-weight: 300;
+      margin: 0px;
+      padding: 10px;
+      font-size: 20px;
+      background-color: #444;
+      color: #fff;
+    }
+    .question{
+      font-size: 30px;
+      margin-bottom: 10px;
+    }
+    .answers {
+      margin-bottom: 20px;
+      text-align: left;
+      display: inline-block;
+    }
+    .answers label{
+      display: block;
+      margin-bottom: 10px;
+    }
+    button{
+      font-family: 'Work Sans', sans-serif;
+      font-size: 22px;
+      background-color: #279;
+      color: #fff;
+      border: 0px;
+      border-radius: 3px;
+      padding: 20px;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+    button:hover{
+      background-color: #38a;
+    }
+    button:disabled{
+      background-color: grey;
+    }
+
+    .slide{
+      position: absolute;
+      left: 0px;
+      top: 0px;
+      width: 100%;
+      z-index: 1;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+    .active-slide{
+      opacity: 1;
+      z-index: 2;
+    }
+    .quiz-container{
+      position: relative;
+      height: 560px;
+      margin-top: 20px;
+    }
+
+    .meaningArea{
+      width: 50%
+      float:left;
+      border: 1px solid black;
+    }
+
+    .choiceArea{
+      width: 50%
+      border: 1px solid black;
+    }
+
+  </style>
+
+  // script for drag and drop
+  <script>
+  function allowDrop(ev) {
+    ev.preventDefault();
+  }
+  
+  function drag(ev) {
+    ev.dataTransfer.setData("text", ev.target.id);
+  }
+  
+  function drop(ev) {
+    ev.preventDefault();
+    var data = ev.dataTransfer.getData("text");
+    ev.target.appendChild(document.getElementById(data));
+  }
+  </script>
+</head>
+
+<body>
+{% load shuffle %}
+{% if question_list %}
+<h1>复习：<b>{{ sword }}</b></h1>
+<div id="results"></div>
+<div class="quiz-container">
+  <div id="quiz"></div>
+</div>
+<button id="previous">上一题</button>
+<button id="next">下一题</button>
+<button id="submit">提交答案</button>
+<a href="/s_word/">返回</a>
+<form id="choiceresultform" action="" method="post">
+  {% csrf_token %}
+  <input type='hidden' name="test_result" value="" />
+  <input type='hidden' name="test_type" value="反选" />
+</form>
+<form id="testresultform" action="/s_word/{{ question_list.0.word.id }}/reviewresult/" method="post">
+  {% csrf_token %}
+  <input type='hidden' name="score" value=0 />
+</form>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript">
+
+  (function() {
+    const myMeanings = [
+    {% for meaning in meaning_list|shuffle %}
+      {
+        {% if meaning.pinyin != "" %}
+        meaning: "{{ meaning.meaning|linebreaksbr }}【{{ meaning.word_class|linebreaksbr }}】【{{ meaning.pinyin|linebreaksbr }}】",
+        {% else %}
+        meaning: "{{ meaning.meaning|linebreaksbr }}【{{ meaning.word_class|linebreaksbr }}】",
+        {% endif %}
+        correctAnswer: [
+        {% for choice in meaning.sword_set.all %}
+          "{{ choice.id }}",
+        {% endfor %}
+        ],
+        meaning_id: "{{ meaning.id }}"
+      },
+    {% endfor %}
+    ];
+    
+    const myChoices = [
+      {% for choice in choice_list|shuffle %}
+            [{{ choice.id }}, "{{ choice.sample|linebreaksbr }}<small>{{ choice.source|linebreaksbr }}</small>"],
+      {% endfor %}
+    ];
+
+    //
+    function initSubmitResultForm(formid) {
+
+      $('#'+formid).submit(function(e) {
+
+      e.preventDefault(); // avoid to execute the actual submit of the form.
+
+      var form = $(this);
+      var url = form.attr('action');
+
+      $.ajax({
+            method: "POST",
+            url: url,
+            data: form.serialize(), // serializes the form's elements.
+            }).done(function(data)
+            {
+              console.log('Submission was successful.');
+              console.log(data);
+            }).fail(function (data) {
+              console.log('An error occurred.');
+              console.log(data);
+            });
+      });
+
+    }
+
+    //
+
+
+    function buildQuiz() {
+      // we'll need a place to store the HTML output
+      const output = [];
+      const meanings = [];
+      const choices = [];
+
+      myMeanings.forEach((currentMeaning, meaningNumber) => {
+        meanings.push(
+          `<div>
+            <lable>${currentMeaning.meaning}</label>
+            <div class=meaning id="meaning${meaningNumber}" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+           </div>`
+        );
+      });
+
+      myChoices.forEach((currentChoice, choiceNumber) => {  
+        choices.push(
+          `<label draggable="true" ondragstart="drag(event)" id="${currentChoice[0]}">${currentChoice[1]}<label>
+          `
+        );
+      });
+
+      output.push(
+          `
+          <div class="meaningArea">
+            ${meanings.join("")}
+          </div>
+          <div class="choiceArea">
+            ${choices.join("")}
+          </div>`
+      );
+
+      // finally combine our output list into one string of HTML and put it on the page
+      quizContainer.innerHTML = output.join("");
+    }
+
+    // 记录每个选项是否正确选择
+    function sendResult(choiceID, testResult) {
+
+      $('input[name="test_result"]').val(testResult);
+      $('#choiceresultform').attr('action', `/s_word/${choiceID}/result/`)
+
+      $('#choiceresultform').submit();
+    }
+
+    function showResults() {
+      // gather answer containers from our quiz
+      const answerContainers = quizContainer.querySelectorAll(".answers");
+
+      // keep track of user's answers
+      let numCorrect = 0;
+
+      // for each question...
+      myQuestions.forEach((currentQuestion, questionNumber) => {
+        // find selected answer
+        const answerContainer = answerContainers[questionNumber];
+        const selector = `input[name=question${questionNumber}]:checked`;
+        const userAnswer = $("input:checkbox[name=question"+questionNumber+"]:checked").map(function(){return $(this).val()}).get();
+        var is_correct = 0;
+
+        // reset answer color
+        answerContainers[questionNumber].style.color = "black";
+        // if answer is correct
+        if (userAnswer.length === currentQuestion.correctAnswer.length && userAnswer.sort().every(function(value, index) { return value === currentQuestion.correctAnswer.sort()[index]})) {
+          // add to the number of correct answers
+          numCorrect++;
+          is_correct = 1;
+        } 
+
+        // submit test result to server (关于例句, 改选的没选和选错的都要标记)
+        userAnswer.forEach((answer, answerNumber) => {
+          if (currentQuestion.correctAnswer.includes(answer)) {
+            sendResult( answer, 1);
+            $("#question"+questionNumber+"_"+answer).css("color","green");
+          } else {
+            sendResult( answer, 0);
+            $("#question"+questionNumber+"_"+answer).css("color","red");
+          }
+        });
+
+        currentQuestion.correctAnswer.forEach((answer, answerNumber) => {
+          if (!(userAnswer.includes(answer))) {
+            sendResult( answer, 0);
+            $("#question"+questionNumber+"_"+answer).css("color","red");
+          }
+        });
+
+      });
+
+      // submit test result to server (关于整个词)
+      var score = eval(`${numCorrect} * 100.0 / ${myQuestions.length}`)
+      $('input[name="score"]').val(score);
+      $('#testresultform').submit();
+
+      // show number of correct answers out of total
+      resultsContainer.innerHTML = `共 ${myQuestions.length} 题，答对 ${numCorrect} 题`;
+
+      if (myQuestions.length === numCorrect) {
+        resultsContainer.style.color = "green";
+        alert("恭喜你通过测试，你可以返回进行下一个词的复习！");
+      } else {
+        resultsContainer.style.color = "red";
+        alert("很抱歉，你没有通过该词的测试，请明天再试！你也可以返回进行下一个词的复习！");
+      }
+
+      // disable submit button to aovide 2nd summit
+      submitButton.disabled = true
+    }
+
+    function showSlide(n) {
+      slides[currentSlide].classList.remove("active-slide");
+      slides[n].classList.add("active-slide");
+      currentSlide = n;
+
+      if (currentSlide === 0) {
+        previousButton.style.display = "none";
+      } else {
+        previousButton.style.display = "inline-block";
+      }
+
+      if (currentSlide === slides.length - 1) {
+        nextButton.style.display = "none";
+        submitButton.style.display = "inline-block";
+      } else {
+        nextButton.style.display = "inline-block";
+        submitButton.style.display = "none";
+      }
+    }
+
+    function showNextSlide() {
+      showSlide(currentSlide + 1);
+    }
+
+    function showPreviousSlide() {
+      showSlide(currentSlide - 1);
+    }
+
+    const quizContainer = document.getElementById("quiz");
+    const resultsContainer = document.getElementById("results");
+    const submitButton = document.getElementById("submit");
+
+    // display quiz right away
+    buildQuiz();
+    initSubmitResultForm("choiceresultform");
+    initSubmitResultForm("testresultform");
+
+    const previousButton = document.getElementById("previous");
+    const nextButton = document.getElementById("next");
+    const slides = document.querySelectorAll(".slide");
+    let currentSlide = 0;
+
+    showSlide(0);
+
+    // on submit, show results
+    submitButton.addEventListener("click", showResults);
+    previousButton.addEventListener("click", showPreviousSlide);
+    nextButton.addEventListener("click", showNextSlide);
+  })();
+
+
+</script>
+{% else %}
+    <p>该实词目前没有学习内容.</p>
+    <a href="/s_word/">返回</a>
+{% endif %}
+</body>
+
+</html>
+
+

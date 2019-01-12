@@ -117,7 +117,7 @@
     <p>用户：{{ user }}</p>
     <h1>实词学习: 复习第二轮</h1>
     {% for word in round2_list %}
-    <a href="/s_word/reviewtest/?sword={{ word.sword }}" class={{ word.status }}>{{ word.sword }}<br>{{ word.score|default_if_none:"" }}</a>
+    <a href="/s_word/reviewtest2/?sword={{ word.sword }}" class={{ word.status }}>{{ word.sword }}<br>{{ word.score|default_if_none:"" }}</a>
     {% endfor %}
     <h1>实词学习: 复习第一轮</h1>
     {% for word in round1_list %}

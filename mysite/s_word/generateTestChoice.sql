@@ -200,6 +200,5 @@ group by a.id, a.sword, a.user_id;
 
 create view  v_user_review_round_2_summary as 
 select a.*, (julianday('now') - julianday(test_date)) till_now,
-       (case when a.score is null then "notstart" else "inprogress" end) status
-from v_user_review_round_2 a
-where (a.score is null) or ( a.score < 100);
+       (case when a.score is null then "notstart" when a.score<100 then "inprogress" else "passed" end) status
+from v_user_review_round_2 a;
