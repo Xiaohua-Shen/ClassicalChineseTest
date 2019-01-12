@@ -85,7 +85,7 @@
   <input type='hidden' name="test_result" value="" />
   <input type='hidden' name="test_type" value="反选" />
 </form>
-<form id="testresultform" action="/s_word/{{ question_list.0.word.id }}/reviewresult/" method="post">
+<form id="testresultform" action="/s_word/{{ meaning_list.0.word.id }}/reviewresult/" method="post">
   {% csrf_token %}
   <input type='hidden' name="score" value=0 />
   <input type='hidden' name="round" value=2 />
