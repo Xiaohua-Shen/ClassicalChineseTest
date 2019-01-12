@@ -102,11 +102,6 @@
         {% else %}
         meaning: "{{ meaning.meaning|linebreaksbr }}【{{ meaning.word_class|linebreaksbr }}】",
         {% endif %}
-        correctAnswer: [
-        {% for choice in meaning.sword_set.all %}
-          "{{ choice.id }}",
-        {% endfor %}
-        ],
         meaning_id: "{{ meaning.id }}"
       },
     {% endfor %}
@@ -114,7 +109,11 @@
     
     const myChoices = [
       {% for choice in choice_list|shuffle %}
-            [{{ choice.id }}, "{{ choice.sample|linebreaksbr }}<small>{{ choice.source|linebreaksbr }}</small>"],
+            [
+              {{ choice.id }}, 
+             "{{ choice.sample|linebreaksbr }}<small>{{ choice.source|linebreaksbr }}</small>",
+              "{{ choice.swordmeaning.id }}"
+             ],
       {% endfor %}
     ];
 
@@ -157,14 +156,14 @@
         meanings.push(
           `<div>
             <lable>${currentMeaning.meaning}</label>
-            <div class="meaning" id="meaning${meaningNumber}" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+            <div class="meaning" id="meaning${currentMeaning.meaning_id}" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
            </div>`
         );
       });
 
       myChoices.forEach((currentChoice, choiceNumber) => {  
         choices.push(
-          `<div><li draggable="true" ondragstart="drag(event)" id="${currentChoice[0]}">${currentChoice[1]}</li></div>
+          `<div><li draggable="true" ondragstart="drag(event)" id="${currentChoice[0]}" value="${currentChoice[2]}">${currentChoice[1]}</li></div>
           `
         );
       });
