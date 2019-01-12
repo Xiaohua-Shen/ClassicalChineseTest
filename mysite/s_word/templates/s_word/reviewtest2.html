@@ -203,7 +203,7 @@
         var is_correct = 0;
 
         const choice = $("#"+currentChoice[0]).val()
-        const userAnswer = $("#"+currentChoice[0]).parent.attr('id')
+        const userAnswer = $("#"+currentChoice[0]).parent().attr('id')
 
         // if answer is correct
         if ( userAnswer == 'meaning'+choice) {
