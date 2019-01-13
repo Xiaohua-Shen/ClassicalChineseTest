@@ -117,11 +117,18 @@
     <p>用户：{{ user }}</p>
     <h1>实词学习: 复习第二轮</h1>
     {% for word in round2_list %}
-    <a href="/s_word/reviewtest2/?sword={{ word.sword }}" class={{ word.status }}>{{ word.sword }}<br>{{ word.score|default_if_none:"" }}</a>
+    <a href="/s_word/reviewtest2/?sword={{ word.sword }}" class={{ word.status }}>
+      {{ word.sword }}
+      <br>日期：{{ word.till_now|default_if_none:"0"|floatformat:0 }}天
+      <br>分数：{{ word.score|default_if_none:"" }}
+    </a>
     {% endfor %}
     <h1>实词学习: 复习第一轮</h1>
     {% for word in round1_list %}
-    <a href="/s_word/reviewtest/?sword={{ word.sword }}" class={{ word.status }}>{{ word.sword }}<br>{{ word.score|default_if_none:"" }}</a>
+    <a href="/s_word/reviewtest/?sword={{ word.sword }}" class={{ word.status }}>
+      {{ word.sword }}
+      <br>{{ word.score|default_if_none:"" }}
+    </a>
     {% endfor %}
     <a href="/s_word/errortest/">错题测试</a>
     <a href="/s_word/randomtest/">随机测试</a>

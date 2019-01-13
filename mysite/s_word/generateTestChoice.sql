@@ -171,7 +171,7 @@ order by score;
 
 -- 用户每个实词的第一轮复习测试通过情况
 create view v_user_review_round_1 as
-select a.id, a.sword, a.user_id, max(b.score) score, max(b.test_date) test_date
+select a.id, a.sword, a.user_id, max(b.score) score, max(b.test_date) test_date, avg(b.score) avg_score, count(b.score) test_count
 from v_user_passed_question_count a
 left outer join
      (select * from s_word_swordreviewround where review_round=1) b
@@ -185,11 +185,12 @@ create view  v_user_review_round_1_summary as
 select a.*, (julianday('now') - julianday(test_date)) till_now,
        (case when a.score is null then "notstart" else "inprogress" end) status
 from v_user_review_round_1 a
-where (a.score is null) or ( a.score < 100);
+where (a.score is null) or ( a.score < 100)
+order by (julianday('now') - julianday(test_date)) desc;
 
 -- 
 create view v_user_review_round_2 as
-select a.id, a.sword, a.user_id, max(b.score) score, max(b.test_date) test_date
+select a.id, a.sword, a.user_id, max(b.score) score, max(b.test_date) test_date, avg(b.score) avg_score, count(b.score) test_count
 from v_user_review_round_1 a
 left outer join 
      (select * from s_word_swordreviewround where review_round=2) b
@@ -201,4 +202,5 @@ group by a.id, a.sword, a.user_id;
 create view  v_user_review_round_2_summary as 
 select a.*, (julianday('now') - julianday(test_date)) till_now,
        (case when a.score is null then "notstart" when a.score<100 then "inprogress" else "passed" end) status
-from v_user_review_round_2 a;
+from v_user_review_round_2 a
+order by (julianday('now') - julianday(test_date)) desc;
