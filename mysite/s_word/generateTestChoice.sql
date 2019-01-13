@@ -187,7 +187,7 @@ create view  v_user_review_round_1_summary as
 select a.*, (julianday('now') - julianday(test_date)) till_now,
        (case when a.score is null and (julianday('now') - julianday(test_date))<1 then "start_later" 
              when a.score is null and (julianday('now') - julianday(test_date))>=1 then "notstart" 
-             when a.score is not null and (julianday('now') - julianday(test_date))<1 then "ingress_later"
+             when a.score is not null and (julianday('now') - julianday(test_date))<1 then "inprogress_later"
              else "inprogress" end) status
 from v_user_review_round_1 a
 where (a.score is null) or ( a.score < 100)
@@ -208,8 +208,10 @@ group by a.id, a.sword, a.user_id;
 
 create view  v_user_review_round_2_summary as 
 select a.*, (julianday('now') - julianday(test_date)) till_now,
-       (case when a.score is null then "notstart" 
-             when a.score<100 then "inprogress" 
+       (case when a.score is null and (julianday('now') - julianday(test_date))<7 then "start_later" 
+             when a.score is null and (julianday('now') - julianday(test_date))>=7 then "notstart" 
+             when a.score < 100 and (julianday('now') - julianday(test_date))<1 then "inprogress_later" 
+             when a.score < 100 and (julianday('now') - julianday(test_date))>=1 then "inprogress" 
              when a.avg_score=100 then "perfect_passed" 
              else "passed" end) status
 from v_user_review_round_2 a
