@@ -217,7 +217,8 @@ def reviewresult(request, word_id):
                                       word_id=word_id,
                                       review_round = request.POST.get("round", 0), 
                                       test_date=timezone.now(),
-                                      score=request.POST.get("score", 0)
+                                      score=request.POST.get("score", 0),
+                                      duration=request.POST.get("duration", 0),
                                       )
     # return page 
     return HttpResponse("test result is recorded")
