@@ -96,6 +96,7 @@ class SWordReviewRound(models.Model):
     test_date = models.DateTimeField('test accessed')
     score = models.IntegerField(default=0)
     duration = models.FloatField(default=0)
+    test_count = models.IntegerField(default=0)
 
 # v_user_review_round_1_summary
 class SWordReviewRound1View(models.Model):

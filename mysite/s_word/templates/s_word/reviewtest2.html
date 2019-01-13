@@ -91,6 +91,7 @@
   <input type='hidden' name="score" value=0 />
   <input type='hidden' name="round" value=2 />
   <input type='hidden' name="duration" value=0 />
+  <input type='hidden' name="test_count" value=0 />
 </form>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -238,6 +239,7 @@
 
       $('input[name="score"]').val(score);
       $('input[name="duration"]').val(duration);
+      $('input[name="test_count"]').val(myChoices.length);
       $('#testresultform').submit();
 
       // show number of correct answers out of total
