@@ -123,6 +123,7 @@ class SWordReviewRound2View(models.Model):
     till_now = models.FloatField(default=0)
     test_count = models.IntegerField(default=0)
     avg_score = models.FloatField(default=0)
+    duration = models.FloatField(default=0)
 
     class Meta:
         managed = False

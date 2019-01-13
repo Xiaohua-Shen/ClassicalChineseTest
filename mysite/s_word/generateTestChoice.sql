@@ -207,7 +207,7 @@ where a.score=100
 group by a.id, a.sword, a.user_id;
 
 create view  v_user_review_round_2_summary as 
-select a.id, a.sword, a.user_id, b.score, a.test_date, a.avg_score, a.test_count,
+select a.id, a.sword, a.user_id, b.score, a.test_date, a.avg_score, a.test_count, b.duration/1000/b.test_count duration,
        (julianday('now') - julianday(a.test_date)) till_now,
        (case when b.score is null and (julianday('now') - julianday(a.test_date))<7 then "start_later" 
              when b.score is null and (julianday('now') - julianday(a.test_date))>=7 then "notstart" 
