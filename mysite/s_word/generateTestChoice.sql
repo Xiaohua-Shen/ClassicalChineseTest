@@ -207,12 +207,17 @@ where a.score=100
 group by a.id, a.sword, a.user_id;
 
 create view  v_user_review_round_2_summary as 
-select a.*, (julianday('now') - julianday(test_date)) till_now,
-       (case when a.score is null and (julianday('now') - julianday(test_date))<7 then "start_later" 
-             when a.score is null and (julianday('now') - julianday(test_date))>=7 then "notstart" 
-             when a.score < 100 and (julianday('now') - julianday(test_date))<1 then "inprogress_later" 
-             when a.score < 100 and (julianday('now') - julianday(test_date))>=1 then "inprogress" 
+select a.id, a.sword, a.user_id, b.score, a.test_date, a.avg_score, a.test_count,
+       (julianday('now') - julianday(a.test_date)) till_now,
+       (case when b.score is null and (julianday('now') - julianday(a.test_date))<7 then "start_later" 
+             when b.score is null and (julianday('now') - julianday(a.test_date))>=7 then "notstart" 
+             when b.score < 100 and (julianday('now') - julianday(a.test_date))<1 then "inprogress_later" 
+             when b.score < 100 and (julianday('now') - julianday(a.test_date))>=1 then "inprogress" 
              when a.avg_score=100 then "perfect_passed" 
              else "passed" end) status
 from v_user_review_round_2 a
-order by (julianday('now') - julianday(test_date)) desc;
+left outer join (select * from s_word_swordreviewround where review_round=2) b
+on a.id = b.word_id
+and a.user_id = b.user_id
+and a.test_date = b.test_date
+order by (julianday('now') - julianday(a.test_date)) desc;
