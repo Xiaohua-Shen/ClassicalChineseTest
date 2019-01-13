@@ -120,7 +120,7 @@
     <a href="/s_word/reviewtest2/?sword={{ word.sword }}" class={{ word.status }}>
       {{ word.sword }}
       <br>日期：{{ word.till_now|default_if_none:"0"|floatformat:0 }}天
-      <br>分数：{{ word.score|default_if_none:"" }}
+      <br>平均分数：{{ word.avg_score|floatformat:0|default_if_none:"" }}
       <br>测试次数：{{ word.test_count|default_if_none:"0" }}
     </a>
     {% endfor %}
@@ -129,7 +129,7 @@
     <a href="/s_word/reviewtest/?sword={{ word.sword }}" class={{ word.status }}>
       {{ word.sword }}
       <br>日期：{{ word.till_now|default_if_none:"0"|floatformat:0 }}天
-      <br>分数：{{ word.score|default_if_none:"" }}
+      <br>平均分数：{{ word.avg_score|floatformat:0|default_if_none:"" }}
       <br>测试次数：{{ word.test_count|default_if_none:"0" }}
     </a>
     {% endfor %}

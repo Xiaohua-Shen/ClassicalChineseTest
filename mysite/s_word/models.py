@@ -105,6 +105,7 @@ class SWordReviewRound1View(models.Model):
     status = models.CharField(max_length=100)
     till_now = models.FloatField(default=0)
     test_count = models.IntegerField(default=0)
+    avg_score = models.FloatField(default=0)
 
     class Meta:
         managed = False
@@ -119,7 +120,8 @@ class SWordReviewRound2View(models.Model):
     status = models.CharField(max_length=100)
     till_now = models.FloatField(default=0)
     test_count = models.IntegerField(default=0)
-
+    avg_score = models.FloatField(default=0)
+    
     class Meta:
         managed = False
         db_table = "v_user_review_round_2_summary"
