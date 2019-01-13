@@ -90,6 +90,7 @@
   {% csrf_token %}
   <input type='hidden' name="score" value=0 />
   <input type='hidden' name="round" value=2 />
+  <input type='hidden' name="duration" value=0 />
 </form>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -119,6 +120,8 @@
       {% endfor %}
     ];
 
+    var starttime;
+    var submittime;
     //
     function initSubmitResultForm(formid) {
 
@@ -182,6 +185,10 @@
 
       // finally combine our output list into one string of HTML and put it on the page
       quizContainer.innerHTML = output.join("");
+
+      //get starttime
+      var date = new Date(); 
+      starttime = date.getTime();
     }
 
     // 记录每个选项是否正确选择
@@ -224,8 +231,13 @@
       });
 
       // submit test result to server (关于整个词)
-      var score = eval(`${numCorrect} * 100.0 / ${myChoices.length}`)
+      var score = eval(`${numCorrect} * 100.0 / ${myChoices.length}`);
+      var date = new Date(); 
+      submittime = date.getTime();
+      var duration = eval(`${submittime} - ${starttime}`)
+
       $('input[name="score"]').val(score);
+      $('input[name="duration"]').val(duration);
       $('#testresultform').submit();
 
       // show number of correct answers out of total

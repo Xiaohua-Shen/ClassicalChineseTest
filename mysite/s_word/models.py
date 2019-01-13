@@ -95,6 +95,7 @@ class SWordReviewRound(models.Model):
     review_round = models.IntegerField(default=0)
     test_date = models.DateTimeField('test accessed')
     score = models.IntegerField(default=0)
+    duration = models.FloatField(default=0)
 
 # v_user_review_round_1_summary
 class SWordReviewRound1View(models.Model):
@@ -121,7 +122,7 @@ class SWordReviewRound2View(models.Model):
     till_now = models.FloatField(default=0)
     test_count = models.IntegerField(default=0)
     avg_score = models.FloatField(default=0)
-    
+
     class Meta:
         managed = False
         db_table = "v_user_review_round_2_summary"
