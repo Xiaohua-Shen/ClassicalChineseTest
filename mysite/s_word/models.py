@@ -104,6 +104,7 @@ class SWordReviewRound1View(models.Model):
     test_date = models.DateTimeField('test accessed')
     status = models.CharField(max_length=100)
     till_now = models.FloatField(default=0)
+    test_count = models.IntegerField(default=0)
 
     class Meta:
         managed = False
@@ -117,6 +118,7 @@ class SWordReviewRound2View(models.Model):
     test_date = models.DateTimeField('test accessed')
     status = models.CharField(max_length=100)
     till_now = models.FloatField(default=0)
+    test_count = models.IntegerField(default=0)
 
     class Meta:
         managed = False
