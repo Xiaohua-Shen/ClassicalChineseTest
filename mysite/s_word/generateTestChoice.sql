@@ -129,7 +129,7 @@ group by a.sword_id, sword, a.test_type, user_id;
 
 -- view user's how many passed question by word (每个用户每个词前3种预习题的通过数量)
 create view v_user_passed_question_count as
-select c.id, a.sword, a.user_id,count(*) passedcount, b.questioncount, 
+select c.id, a.sword, a.user_id,count(*) passedcount, b.questioncount, max(pass_date) pass_date,
        (case when count(*) = b.questioncount then "passed" else "inprogress" end) status
 from v_user_passed_question a,
      v_swordtestquestion_count b,
@@ -171,7 +171,9 @@ order by score;
 
 -- 用户每个实词的第一轮复习测试通过情况
 create view v_user_review_round_1 as
-select a.id, a.sword, a.user_id, max(b.score) score, max(b.test_date) test_date, avg(b.score) avg_score, count(b.score) test_count
+select a.id, a.sword, a.user_id, max(b.score) score, 
+       (case when max(b.test_date) is null then a.pass_date else max(b.test_date) end) test_date, 
+       avg(b.score) avg_score, count(b.score) test_count
 from v_user_passed_question_count a
 left outer join
      (select * from s_word_swordreviewround where review_round=1) b
@@ -183,14 +185,19 @@ group by a.id, a.sword, a.user_id;
 -- （没有记录以及有记录但没有100分的记录的且当天没有测试记录）
 create view  v_user_review_round_1_summary as 
 select a.*, (julianday('now') - julianday(test_date)) till_now,
-       (case when a.score is null then "notstart" else "inprogress" end) status
+       (case when a.score is null and (julianday('now') - julianday(test_date))<1 then "start_later" 
+             when a.score is null and (julianday('now') - julianday(test_date))>=1 then "notstart" 
+             when a.score is not null and (julianday('now') - julianday(test_date))<1 then "ingress_later"
+             else "inprogress" end) status
 from v_user_review_round_1 a
 where (a.score is null) or ( a.score < 100)
 order by (julianday('now') - julianday(test_date)) desc;
 
 -- 
 create view v_user_review_round_2 as
-select a.id, a.sword, a.user_id, max(b.score) score, max(b.test_date) test_date, avg(b.score) avg_score, count(b.score) test_count
+select a.id, a.sword, a.user_id, max(b.score) score, 
+       (case when max(b.test_date) is null then a.test_date else max(b.test_date) end) test_date, 
+       avg(b.score) avg_score, count(b.score) test_count
 from v_user_review_round_1 a
 left outer join 
      (select * from s_word_swordreviewround where review_round=2) b
